@@ -10,7 +10,7 @@ export function CinematicCanvas() {
   return (
     <Canvas
       shadows
-      camera={{ position: [0, 22, 28], fov: 42 }}
+      camera={{ position: [10, 22, 28], fov: 42, near: 0.5, far: 150 }}
       gl={{
         antialias: true,
         alpha: false,
@@ -20,7 +20,7 @@ export function CinematicCanvas() {
       dpr={[1, 1.5]}
       style={{ width: "100%", height: "100%" }}
       onCreated={({ gl }) => {
-        gl.setClearColor("#0a0e1a");
+        gl.setClearColor("#8aa0b0");
         gl.outputColorSpace = THREE.SRGBColorSpace;
         gl.shadowMap.type = THREE.PCFShadowMap;
       }}

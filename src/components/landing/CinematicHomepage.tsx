@@ -26,7 +26,7 @@ function FallbackContent() {
       </div>
       <h1 className="mb-4 text-5xl font-bold tracking-tight text-white">RAKVA</h1>
       <p className="mb-3 text-lg font-medium text-slate-300">
-        AI-POWERED DISASTER INTELLIGENCE & RECOVERY PLANNING
+        AI-POWERED DISASTER INTELLIGENCE &amp; RECOVERY PLANNING
       </p>
       <p className="mb-8 text-slate-400">
         Detect the damage. Understand the impact. Prioritize the recovery.
@@ -90,6 +90,37 @@ export default function CinematicHomepage() {
       <div className="fixed inset-0 z-0">
         <CinematicCanvas />
       </div>
+
+      {/* Vignette */}
+      <div
+        className="pointer-events-none fixed inset-0 z-20"
+        style={{
+          background: "radial-gradient(ellipse at center, transparent 45%, rgba(0,0,0,0.45) 100%)",
+        }}
+      />
+
+      {/* Cinematic letterbox bars */}
+      <div
+        className="pointer-events-none fixed left-0 right-0 top-0 z-20 h-[6vh]"
+        style={{
+          background: "linear-gradient(to bottom, rgba(0,0,0,0.6), transparent)",
+        }}
+      />
+      <div
+        className="pointer-events-none fixed bottom-0 left-0 right-0 z-20 h-[6vh]"
+        style={{
+          background: "linear-gradient(to top, rgba(0,0,0,0.6), transparent)",
+        }}
+      />
+
+      {/* Color grading */}
+      <div
+        className="pointer-events-none fixed inset-0 z-20 mix-blend-multiply"
+        style={{
+          background: "linear-gradient(180deg, rgba(20,40,60,0.08), rgba(10,20,30,0.05))",
+        }}
+      />
+
       <StoryOverlay currentSection={currentSection} />
     </div>
   );
