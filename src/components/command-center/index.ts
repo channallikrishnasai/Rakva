@@ -1,6 +1,10 @@
 export { DisasterMap } from "./DisasterMap";
+export { DisasterScene3D } from "./DisasterScene3D";
+export type { SceneLayer } from "./DisasterScene3D";
 export { AssetIntelligencePanel } from "./AssetIntelligencePanel";
 export { EvidenceFusionPanel } from "./EvidenceFusionPanel";
 export { DynamicReassessment } from "./DynamicReassessment";
 export { PriorityEngine } from "./PriorityEngine";
 export { FilterControls } from "./FilterControls";
+export { WhatIfPanel } from "./WhatIfPanel";
+export { EvidenceTimeline } from "./EvidenceTimeline";

@@ -1,16 +1,37 @@
 ﻿"use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { commandCenterData, heroAssetId, simulationEvents } from "@/lib/mock-data";
 import type { DisasterType, AssetType, FilterPriority } from "@/lib/types/command-center";
+import type { SceneLayer } from "@/components/command-center";
 import {
   DisasterMap,
+  DisasterScene3D,
   AssetIntelligencePanel,
   EvidenceFusionPanel,
   DynamicReassessment,
   PriorityEngine,
   FilterControls,
+  WhatIfPanel,
+  EvidenceTimeline,
 } from "@/components/command-center";
+
+function checkWebGLSupport(): boolean {
+  if (typeof window === "undefined") return true;
+  try {
+    const canvas = document.createElement("canvas");
+    return !!(window.WebGLRenderingContext && (canvas.getContext("webgl") || canvas.getContext("experimental-webgl")));
+  } catch {
+    return false;
+  }
+}
+
+const sceneLayers: { value: SceneLayer; label: string }[] = [
+  { value: "situation", label: "Situation" },
+  { value: "damage", label: "Damage" },
+  { value: "dependencies", label: "Dependencies" },
+  { value: "recovery", label: "Recovery" },
+];
 
 export default function CommandCenterPage() {
   const data = commandCenterData;
@@ -21,6 +42,10 @@ export default function CommandCenterPage() {
   const [filterPriority, setFilterPriority] = useState<FilterPriority | "all">("all");
   const [filterEvidence, setFilterEvidence] = useState("all");
   const [simulated, setSimulated] = useState(false);
+  const [viewMode, setViewMode] = useState<"3d" | "2d">("3d");
+  const [webglSupported] = useState(checkWebGLSupport);
+  const [whatIfActive, setWhatIfActive] = useState(false);
+  const [sceneLayer, setSceneLayer] = useState<SceneLayer>("situation");
 
   const filteredAssets = useMemo(() => {
     return data.assets.filter((a) => {
@@ -37,18 +62,19 @@ export default function CommandCenterPage() {
     ? simulationEvents.find((e) => e.assetId === selectedAsset.id) || null
     : null;
 
-  const handleSimulate = () => {
-    if (simulated) {
-      setSimulated(false);
-    } else {
-      setSimulated(true);
-    }
-  };
+  const handleSimulate = useCallback(() => {
+    setSimulated((prev) => !prev);
+  }, []);
 
-  const handleSelectAsset = (id: string) => {
+  const handleSelectAsset = useCallback((id: string) => {
     setSelectedAssetId(id);
     setSimulated(false);
-  };
+    setWhatIfActive(false);
+  }, []);
+
+  const handleWhatIfToggle = useCallback(() => {
+    setWhatIfActive((prev) => !prev);
+  }, []);
 
   return (
     <div className="mx-auto max-w-[1600px] px-4 py-6 lg:px-6">
@@ -118,8 +144,8 @@ export default function CommandCenterPage() {
         </div>
       </div>
 
-      {/* Filter Controls */}
-      <div className="mb-4 rounded-lg border border-slate-700/30 bg-slate-800/30 px-4 py-2.5">
+      {/* Filter Controls + View/Layer Controls */}
+      <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between rounded-lg border border-slate-700/30 bg-slate-800/30 px-4 py-2.5">
         <FilterControls
           disasterType={filterDisaster}
           assetType={filterAsset}
@@ -130,27 +156,91 @@ export default function CommandCenterPage() {
           onPriorityChange={setFilterPriority}
           onEvidenceChange={setFilterEvidence}
         />
+
+        <div className="flex items-center gap-3">
+          {/* Scene Layers (3D only) */}
+          {webglSupported && viewMode === "3d" && (
+            <div className="flex items-center gap-1 rounded-md border border-slate-700/50 bg-slate-900/50 p-0.5">
+              {sceneLayers.map((layer) => (
+                <button
+                  key={layer.value}
+                  onClick={() => setSceneLayer(layer.value)}
+                  className={`rounded px-2.5 py-1.5 text-[10px] font-semibold transition-colors ${
+                    sceneLayer === layer.value
+                      ? "bg-slate-700/50 text-cyan-400"
+                      : "text-slate-500 hover:text-slate-300"
+                  }`}
+                >
+                  {layer.label}
+                </button>
+              ))}
+            </div>
+          )}
+
+          {/* 2D/3D Toggle */}
+          {webglSupported && (
+            <div className="flex items-center gap-1 rounded-md border border-slate-700/50 bg-slate-900/50 p-0.5">
+              <button
+                onClick={() => setViewMode("2d")}
+                className={`rounded px-3 py-1.5 text-[10px] font-semibold transition-colors ${
+                  viewMode === "2d"
+                    ? "bg-slate-700/50 text-cyan-400"
+                    : "text-slate-500 hover:text-slate-300"
+                }`}
+              >
+                2D MAP
+              </button>
+              <button
+                onClick={() => setViewMode("3d")}
+                className={`rounded px-3 py-1.5 text-[10px] font-semibold transition-colors ${
+                  viewMode === "3d"
+                    ? "bg-slate-700/50 text-cyan-400"
+                    : "text-slate-500 hover:text-slate-300"
+                }`}
+              >
+                3D SCENE
+              </button>
+            </div>
+          )}
+        </div>
       </div>
 
-      {/* Main Content: Map + Intelligence Panel */}
+      {/* Main Content: Map/Scene + Intelligence Panel */}
       <div className="grid gap-4 lg:grid-cols-[1fr_380px]">
-        {/* Left: Map */}
+        {/* Left: Map or 3D Scene */}
         <div className="space-y-4">
-          <DisasterMap
-            assets={filteredAssets}
-            selectedAssetId={selectedAsset?.id || ""}
-            onSelectAsset={handleSelectAsset}
-          />
+          {viewMode === "3d" && webglSupported ? (
+            <div className="h-[450px] lg:h-[520px]">
+              <DisasterScene3D
+                assets={filteredAssets}
+                selectedAssetId={selectedAsset?.id || ""}
+                onSelectAsset={handleSelectAsset}
+                whatIfActive={whatIfActive}
+                sceneLayer={sceneLayer}
+              />
+            </div>
+          ) : (
+            <DisasterMap
+              assets={filteredAssets}
+              selectedAssetId={selectedAsset?.id || ""}
+              onSelectAsset={handleSelectAsset}
+            />
+          )}
 
-          {/* Evidence Fusion + Dynamic Reassessment side by side below map */}
+          {/* Evidence Fusion + Dynamic Reassessment + WhatIf side by side below map */}
           {selectedAsset && (
-            <div className="grid gap-4 sm:grid-cols-2">
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               <EvidenceFusionPanel asset={selectedAsset} />
               <DynamicReassessment
                 asset={selectedAsset}
                 simulationEvent={simulated ? simulationEvent : null}
                 onSimulate={handleSimulate}
                 simulated={simulated}
+              />
+              <WhatIfPanel
+                asset={selectedAsset}
+                isActive={whatIfActive}
+                onToggle={handleWhatIfToggle}
               />
             </div>
           )}
@@ -165,9 +255,22 @@ export default function CommandCenterPage() {
                 animatingPriority={
                   simulated && simulationEvent
                     ? simulationEvent.priorityChange
-                    : null
+                    : whatIfActive
+                      ? (() => {
+                          const scenarios: Record<string, { from: number; to: number }> = {
+                            "BRIDGE-024": { from: 94, to: 97 },
+                            "ROAD-017": { from: 82, to: 89 },
+                            "HOSPITAL-002": { from: 88, to: 96 },
+                            "UTILITY-009": { from: 85, to: 92 },
+                            "BUILDING-031": { from: 68, to: 74 },
+                          };
+                          const s = scenarios[selectedAsset.id];
+                          return s || null;
+                        })()
+                      : null
                 }
               />
+              <EvidenceTimeline asset={selectedAsset} />
               <PriorityEngine />
             </>
           )}
