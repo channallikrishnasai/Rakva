@@ -1,7 +1,7 @@
-﻿"use client";
+"use client";
 
 import { useState, useMemo, useCallback } from "react";
-import { commandCenterData, heroAssetId, simulationEvents } from "@/lib/mock-data";
+import { commandCenterData, heroAssetId, simulationEvents } from "@/data/mock";
 import type { DisasterType, AssetType, FilterPriority } from "@/lib/types/command-center";
 import type { SceneLayer } from "@/components/command-center";
 import {
@@ -48,15 +48,15 @@ export default function CommandCenterPage() {
   const [sceneLayer, setSceneLayer] = useState<SceneLayer>("situation");
 
   const filteredAssets = useMemo(() => {
-    return data.assets.filter((a) => {
+    return data.assets.filter((a: any) => {
       if (filterAsset !== "all" && a.assetType !== filterAsset) return false;
       if (filterPriority !== "all" && a.priorityLabel !== filterPriority) return false;
-      if (filterEvidence !== "all" && !a.evidenceSources.some((e) => e.source === filterEvidence)) return false;
+      if (filterEvidence !== "all" && !a.evidenceSources.some((e: any) => e.source === filterEvidence)) return false;
       return true;
     });
   }, [data.assets, filterAsset, filterPriority, filterEvidence]);
 
-  const selectedAsset = filteredAssets.find((a) => a.id === selectedAssetId) || filteredAssets[0];
+  const selectedAsset = filteredAssets.find((a: any) => a.id === selectedAssetId) || filteredAssets[0];
 
   const simulationEvent = selectedAsset
     ? simulationEvents.find((e) => e.assetId === selectedAsset.id) || null

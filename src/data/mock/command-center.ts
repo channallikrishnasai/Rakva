@@ -1,4 +1,4 @@
-import type { CommandCenterData, SimulationEvent } from "../types/command-center";
+import type { CommandCenterData, SimulationEvent } from "../../lib/types/command-center";
 
 export const commandCenterData: CommandCenterData = {
   disasterType: "flood",

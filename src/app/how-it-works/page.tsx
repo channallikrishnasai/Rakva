@@ -1,5 +1,5 @@
-﻿import { Card } from "@/components/ui";
-import { pipelineStages } from "@/lib/mock-data";
+import { Card } from "@/components/ui";
+import { pipelineStages } from "@/data/mock";
 
 const pipelineDetails = [
   {

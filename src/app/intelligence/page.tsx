@@ -1,5 +1,5 @@
-﻿import { Card, CardHeader, MetricCard } from "@/components/ui";
-import { damageReports, intelligenceSummary } from "@/lib/mock-data";
+import { Card, CardHeader, MetricCard } from "@/components/ui";
+import { damageReports, intelligenceSummary } from "@/data/mock";
 import { severityColor } from "@/lib/utils";
 
 export default function IntelligencePage() {
