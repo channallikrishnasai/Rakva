@@ -54,7 +54,7 @@ mapLayerRegistry.register({
 });
 
 mapLayerRegistry.register({
-  id: 'soil_moisture',
+  id: 'soil-moisture',
   name: 'Soil Moisture',
   description: 'Volumetric soil moisture content',
   category: 'Environment',
@@ -69,7 +69,7 @@ mapLayerRegistry.register({
 });
 
 mapLayerRegistry.register({
-  id: 'river_level',
+  id: 'river-level',
   name: 'River Level',
   description: 'Water level in rivers and streams',
   category: 'Environment',
@@ -78,6 +78,21 @@ mapLayerRegistry.register({
   dataType: 'numeric',
   thresholds: [3, 5, 8],
   colors: ['#3b82f6', '#60a5fa', '#93c5fd', '#bfdbfe', '#f87171'],
+  supportedGeographicLevels: ['country', 'state', 'district', 'subdistrict'],
+  supportedZoomLevels: [1, 12],
+  source: 'Demo Geographic Data',
+});
+
+mapLayerRegistry.register({
+  id: 'wind-speed',
+  name: 'Wind Speed',
+  description: 'Wind speed at 10m above ground',
+  category: 'Environment',
+  unit: 'km/h',
+  valueType: 'measurement',
+  dataType: 'numeric',
+  thresholds: [20, 50, 80],
+  colors: ['#a7f3d0', '#34d399', '#10b981', '#059669'],
   supportedGeographicLevels: ['country', 'state', 'district', 'subdistrict'],
   supportedZoomLevels: [1, 12],
   source: 'Demo Geographic Data',
@@ -264,6 +279,37 @@ mapLayerRegistry.register({
   supportedGeographicLevels: ['country', 'state', 'district'],
   supportedZoomLevels: [1, 12],
   source: 'Command Center Data',
+});
+
+// Hazard Susceptibility and Signal Layers
+mapLayerRegistry.register({
+  id: 'flood_susceptibility',
+  name: 'Flood Susceptibility',
+  description: 'Inherent geographic risk for flooding',
+  category: 'Risk',
+  unit: 'score',
+  valueType: 'score',
+  dataType: 'numeric',
+  thresholds: [20, 40, 60, 80],
+  colors: ['#3b82f6', '#60a5fa', '#93c5fd', '#f59e0b', '#ef4444'],
+  supportedGeographicLevels: ['country', 'state', 'district', 'subdistrict'],
+  supportedZoomLevels: [1, 15],
+  source: 'Hazard Orchestrator',
+});
+
+mapLayerRegistry.register({
+  id: 'flood_hazard_signal',
+  name: 'Flood Hazard Signal',
+  description: 'Current environmental trigger signal for flooding',
+  category: 'Operations',
+  unit: 'score',
+  valueType: 'score',
+  dataType: 'numeric',
+  thresholds: [20, 40, 60, 80],
+  colors: ['#3b82f6', '#60a5fa', '#f59e0b', '#ef4444', '#7f1d1d'],
+  supportedGeographicLevels: ['country', 'state', 'district', 'subdistrict'],
+  supportedZoomLevels: [1, 15],
+  source: 'Hazard Orchestrator',
 });
 
 // Export all registered layer IDs for use in the UI

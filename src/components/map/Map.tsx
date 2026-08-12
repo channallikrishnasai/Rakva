@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useEffect, useRef } from "react";
+import { useState, useCallback, useEffect, useRef, useMemo } from "react";
 import { getLayerDefinition, getAllLayerDefinitions, getSupportedGeographicLevels, classifyValue, formatValue, getVisualCategory } from "@/geospatial/layers/layer-utils";
 import type { MapLayerDefinition } from "@/core/contracts";
 import DynamicLegend from "./DynamicLegend";
@@ -37,7 +37,7 @@ interface MapProps {
  * - Missing data handling
  * - Color consistency between value and category
  */
-export function Map({ 
+export function IntelligenceMap({ 
   initialLayer = 'rainfall', 
   initialLevel = 'state',
   regions,
@@ -71,7 +71,7 @@ export function Map({
 
   // Format hovered value
   const formattedHoverValue = useMemo(() => {
-    if (!hoveredRegion || !regions[hoveredRegion]) return '';
+    if (!hoveredRegion || !regions?.[hoveredRegion]) return '';
     const region = regions[hoveredRegion];
     if (region.value === undefined || region.value === null) return 'No data';
     return formatValue(region.value, definition!);
@@ -79,7 +79,7 @@ export function Map({
 
   // Format clicked value
   const formattedClickValue = useMemo(() => {
-    if (!clickedRegion || !regions[clickedRegion]) return '';
+    if (!clickedRegion || !regions?.[clickedRegion]) return '';
     const region = regions[clickedRegion];
     if (region.value === undefined || region.value === null) return 'No data';
     return formatValue(region.value, definition!);
@@ -87,7 +87,7 @@ export function Map({
 
   // Get visual category for display
   const visualCategory = useMemo(() => {
-    if (!hoveredRegion || !regions[hoveredRegion] || definition === undefined) return null;
+    if (!hoveredRegion || !regions?.[hoveredRegion] || definition === undefined) return null;
     const value = regions[hoveredRegion].value;
     if (value === undefined || value === null || isNaN(Number(value))) return null;
     return getVisualCategory(Number(value), definition);
@@ -106,7 +106,7 @@ export function Map({
   }, []);
 
   // Handle region hover
-  const handleRegionHover = useCallback((regionId: string) => {
+  const handleRegionHover = useCallback((regionId: string | null) => {
     setHoveredRegion(regionId);
     setClickedRegion(null); // reset click state on hover
   }, []);
@@ -246,7 +246,7 @@ export function Map({
           {clickedRegion && definition && (
             <div className="mt-3 p-3 bg-slate-900/70 rounded border border-cyan-500/20">
               <div className="flex items-center justify-between text-[10px]">
-                <span className="font-medium text-slate-300">{regions[clickedRegion]?.name || 'Region'}</span>
+                <span className="font-medium text-slate-300">{regions?.[clickedRegion]?.name || 'Region'}</span>
                 <button
                   onClick={() => setClickedRegion(null)}
                   className="text-[9px] text-cyan-400 hover-underline"
@@ -260,7 +260,7 @@ export function Map({
                 </p>
                 <p className="mt-1 text-[9px]">
                   <span className="font-medium">Value:</span> {formatValue(
-                    regions[clickedRegion].value,
+                    regions?.[clickedRegion]?.value,
                     definition
                   )}
                 </p>
@@ -298,5 +298,4 @@ export function Map({
     </div>
   );
 }
-export { Map };
-export default Map;
+export default IntelligenceMap;

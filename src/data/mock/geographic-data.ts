@@ -29,7 +29,10 @@ export const districtRegions: GeoRegion[] = [
   { id: 'IN-GJ-AHD', level: 'district', name: 'Ahmedabad', parentId: 'IN-GJ', center: [23.0, 72.5] as [number, number] }
 ];
 
-export const subdistricts: GeoRegion[] = [];
+export const subdistricts: GeoRegion[] = [
+  { id: 'IN-MP-BHP-FLAT', level: 'subdistrict', name: 'Bhopal Plains', parentId: 'IN-MP-BHP', center: [23.1, 77.3] as [number, number] },
+  { id: 'IN-MP-BHP-STEEP', level: 'subdistrict', name: 'Bhopal Hills', parentId: 'IN-MP-BHP', center: [23.3, 77.5] as [number, number] }
+];
 export const localities: GeoRegion[] = [];
 export const gridCells: GeoRegion[] = [];
 export const assets: GeoRegion[] = [];

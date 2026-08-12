@@ -34,7 +34,7 @@ function categoryButtonClass(
  * LayerSelector - Organized layer selection control.
  * Layers are grouped by category with logical grouping.
  */
-export default function LayerSelector({
+export function LayerSelector({
   selectedLayer,
   onSelectLayer,
   showFilters,
@@ -97,9 +97,11 @@ export default function LayerSelector({
             className={categoryButtonClass(selectedLayer, cat)}
             aria-controls={`layer-category-${category}`}
             aria-expanded={
-              selectedLayer &&
-              selectedLayer !== "placeholder" &&
-              cat.layers.some((l) => l.id === selectedLayer)
+              !!(
+                selectedLayer &&
+                selectedLayer !== "placeholder" &&
+                cat.layers.some((l) => l.id === selectedLayer)
+              )
             }
           >
             {cat.name}

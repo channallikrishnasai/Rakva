@@ -1,0 +1,36 @@
+
+> rakva@0.1.0 build
+> next build
+
+▲ Next.js 16.3.0 (Turbopack)
+⚠ Warning: Next.js ignored package-lock.json in C:\Users\prakul because it is outside the current Git repository (C:\Users\prakul\Desktop\projects\Rakva).
+ To use this directory, set `turbopack.root` in your Next.js config.
+
+✓ Running next.config.ts took 24ms
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 941ms
+  Running TypeScript ...
+src/data/repositories/environmental-repository.ts(91,3): error TS1128: Declaration or statement expected.
+src/data/repositories/environmental-repository.ts(93,3): error TS1434: Unexpected keyword or identifier.
+src/data/repositories/environmental-repository.ts(94,13): error TS1005: ',' expected.
+src/data/repositories/environmental-repository.ts(95,13): error TS1005: ',' expected.
+src/data/repositories/environmental-repository.ts(97,4): error TS1005: ';' expected.
+src/data/repositories/environmental-repository.ts(98,11): error TS1005: ':' expected.
+src/data/repositories/environmental-repository.ts(98,59): error TS1005: ',' expected.
+src/data/repositories/environmental-repository.ts(99,12): error TS1005: ':' expected.
+src/data/repositories/environmental-repository.ts(99,84): error TS1005: ',' expected.
+src/data/repositories/environmental-repository.ts(100,3): error TS1136: Property assignment expected.
+src/data/repositories/environmental-repository.ts(105,3): error TS1128: Declaration or statement expected.
+src/data/repositories/environmental-repository.ts(107,3): error TS1434: Unexpected keyword or identifier.
+src/data/repositories/environmental-repository.ts(108,13): error TS1005: ',' expected.
+src/data/repositories/environmental-repository.ts(109,13): error TS1005: ',' expected.
+src/data/repositories/environmental-repository.ts(111,4): error TS1005: ';' expected.
+src/data/repositories/environmental-repository.ts(112,11): error TS1005: ':' expected.
+src/data/repositories/environmental-repository.ts(112,59): error TS1005: ',' expected.
+src/data/repositories/environmental-repository.ts(113,12): error TS1005: ':' expected.
+src/data/repositories/environmental-repository.ts(113,96): error TS1005: ',' expected.
+src/data/repositories/environmental-repository.ts(114,3): error TS1136: Property assignment expected.
+src/data/repositories/environmental-repository.ts(274,2): error TS1005: '}' expected.
+Failed to type check.
+

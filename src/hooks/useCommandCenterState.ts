@@ -3,6 +3,8 @@ import { Asset } from '@/core/contracts';
 import { MockAssetRepository } from '@/data/mock/repositories';
 import { SceneLayer } from '@/components/command-center/DisasterScene3D';
 import { commandCenterData, simulationEvents } from '@/data/mock/command-center';
+import { priorityEngine } from '@/core/priority/PriorityEngine';
+import { mockPriorityInputs } from '@/data/mock/MockPriorityProvider';
 
 export interface CommandCenterState {
   // Data

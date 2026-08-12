@@ -14,6 +14,8 @@ import {
   WhatIfPanel,
   EvidenceTimeline,
 } from "@/components/command-center";
+import { HazardAssessmentPanel } from "@/components/hazard/HazardAssessmentPanel";
+import { EnvironmentalSummaryPanel } from "@/components/environmental/EnvironmentalSummaryPanel";
 
 function checkWebGLSupport(): boolean {
   if (typeof window === "undefined") return true;
@@ -279,6 +281,14 @@ function CommandCenterContent() {
                 }
               />
               <EvidenceTimeline asset={selectedAsset} />
+              
+              <EnvironmentalSummaryPanel regionId={selectedAsset.regionId} />
+
+              <div className="rounded-lg border border-slate-700/30 bg-slate-800/20 p-4">
+                <h3 className="mb-3 text-sm font-semibold text-white">Location Hazard Assessment</h3>
+                <HazardAssessmentPanel regionId={selectedAsset.regionId} />
+              </div>
+
               <PriorityEngine />
             </>
           )}

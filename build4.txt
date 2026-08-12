@@ -1,0 +1,114 @@
+
+> rakva@0.1.0 build
+> next build
+
+▲ Next.js 16.3.0 (Turbopack)
+⚠ Warning: Next.js ignored package-lock.json in C:\Users\prakul because it is outside the current Git repository (C:\Users\prakul\Desktop\projects\Rakva).
+ To use this directory, set `turbopack.root` in your Next.js config.
+
+✓ Running next.config.ts took 23ms
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 4.3s
+  Running TypeScript ...
+src/components/environmental/EnvironmentalConditionCard.tsx(3,10): error TS2305: Module '"@/lib/utils"' has no exported member 'useComputedStyle'.
+src/components/environmental/EnvironmentalConditionCard.tsx(20,17): error TS2323: Cannot redeclare exported variable 'EnvironmentalConditionCard'.
+src/components/environmental/EnvironmentalConditionCard.tsx(30,17): error TS2304: Cannot find name 'TemporalMode'.
+src/components/environmental/EnvironmentalConditionCard.tsx(36,58): error TS2339: Property 'getAllVariables' does not exist on type 'MockEnvironmentalProvider'.
+src/components/environmental/EnvironmentalConditionCard.tsx(42,26): error TS2339: Property 'unit' does not exist on type '{}'.
+src/components/environmental/EnvironmentalConditionCard.tsx(46,49): error TS2345: Argument of type 'unknown' is not assignable to parameter of type 'EnvironmentalVariable | undefined'.
+src/components/environmental/EnvironmentalConditionCard.tsx(53,31): error TS2339: Property 'acceptableRange' does not exist on type '{}'.
+src/components/environmental/EnvironmentalConditionCard.tsx(67,32): error TS2304: Cannot find name 'TemporalMode'.
+src/components/environmental/EnvironmentalConditionCard.tsx(78,55): error TS2339: Property 'name' does not exist on type '{}'.
+src/components/environmental/EnvironmentalConditionCard.tsx(83,20): error TS2339: Property 'name' does not exist on type '{}'.
+src/components/environmental/EnvironmentalConditionCard.tsx(98,20): error TS2339: Property 'unit' does not exist on type '{}'.
+src/components/environmental/EnvironmentalConditionCard.tsx(100,23): error TS2339: Property 'unit' does not exist on type '{}'.
+src/components/environmental/EnvironmentalConditionCard.tsx(186,10): error TS2323: Cannot redeclare exported variable 'EnvironmentalConditionCard'.
+src/components/environmental/EnvironmentalConditionCard.tsx(186,10): error TS2484: Export declaration conflicts with exported declaration of 'EnvironmentalConditionCard'.
+src/components/environmental/EnvironmentalDashboard.tsx(16,17): error TS2323: Cannot redeclare exported variable 'EnvironmentalDashboard'.
+src/components/environmental/EnvironmentalDashboard.tsx(23,25): error TS2304: Cannot find name 'TemporalMode'.
+src/components/environmental/EnvironmentalDashboard.tsx(25,52): error TS2304: Cannot find name 'TemporalMode'.
+src/components/environmental/EnvironmentalDashboard.tsx(27,100): error TS2345: Argument of type '{}' is not assignable to parameter of type 'Record<EnvironmentalVariableId, number | null> | (() => Record<EnvironmentalVariableId, number | null>)'.
+src/components/environmental/EnvironmentalDashboard.tsx(39,57): error TS2339: Property 'getAllVariables' does not exist on type 'MockEnvironmentalProvider'.
+src/components/environmental/EnvironmentalDashboard.tsx(52,15): error TS2740: Type '{}' is missing the following properties from type 'Record<EnvironmentalVariableId, number | null>': temperature, rainfall, humidity, "wind-speed", and 5 more.
+src/components/environmental/EnvironmentalDashboard.tsx(91,15): error TS2740: Type '{}' is missing the following properties from type 'Record<EnvironmentalVariableId, number | null>': temperature, rainfall, humidity, "wind-speed", and 5 more.
+src/components/environmental/EnvironmentalDashboard.tsx(112,7): error TS2561: Object literal may only specify known properties, but 'windSpeed' does not exist in type 'Record<EnvironmentalVariableId, { average: number; label: string; }>'. Did you mean to write 'wind-speed'?
+src/components/environmental/EnvironmentalDashboard.tsx(120,27): error TS2554: Expected 2 arguments, but got 1.
+src/components/environmental/EnvironmentalDashboard.tsx(121,11): error TS2740: Type '{}' is missing the following properties from type 'Record<EnvironmentalVariableId, "increasing" | "stable" | "decreasing" | null>': temperature, rainfall, humidity, "wind-speed", and 5 more.
+src/components/environmental/EnvironmentalDashboard.tsx(125,64): error TS2339: Property 'getAllVariables' does not exist on type 'MockEnvironmentalProvider'.
+src/components/environmental/EnvironmentalDashboard.tsx(128,35): error TS2339: Property 'acceptableRange' does not exist on type '{}'.
+src/components/environmental/EnvironmentalDashboard.tsx(142,49): error TS2304: Cannot find name 'TemporalMode'.
+src/components/environmental/EnvironmentalDashboard.tsx(159,55): error TS2304: Cannot find name 'TemporalMode'.
+src/components/environmental/EnvironmentalDashboard.tsx(191,70): error TS2339: Property 'getAllVariables' does not exist on type 'MockEnvironmentalProvider'.
+src/components/environmental/EnvironmentalDashboard.tsx(217,72): error TS2339: Property 'getAllVariables' does not exist on type 'MockEnvironmentalProvider'.
+src/components/environmental/EnvironmentalDashboard.tsx(235,61): error TS2339: Property 'name' does not exist on type '{}'.
+src/components/environmental/EnvironmentalDashboard.tsx(237,38): error TS2339: Property 'unit' does not exist on type '{}'.
+src/components/environmental/EnvironmentalDashboard.tsx(237,79): error TS2339: Property 'unit' does not exist on type '{}'.
+src/components/environmental/EnvironmentalDashboard.tsx(240,82): error TS2339: Property 'unit' does not exist on type '{}'.
+src/components/environmental/EnvironmentalDashboard.tsx(262,72): error TS2339: Property 'getAllVariables' does not exist on type 'MockEnvironmentalProvider'.
+src/components/environmental/EnvironmentalDashboard.tsx(273,52): error TS18046: 'varDef' is of type 'unknown'.
+src/components/environmental/EnvironmentalDashboard.tsx(287,59): error TS2304: Cannot find name 'TemporalMode'.
+src/components/environmental/EnvironmentalDashboard.tsx(307,10): error TS2323: Cannot redeclare exported variable 'EnvironmentalDashboard'.
+src/components/environmental/EnvironmentalDashboard.tsx(307,10): error TS2484: Export declaration conflicts with exported declaration of 'EnvironmentalDashboard'.
+src/components/map/Map.tsx(40,17): error TS2323: Cannot redeclare exported variable 'IntelligenceMap'.
+src/components/map/Map.tsx(302,10): error TS2323: Cannot redeclare exported variable 'IntelligenceMap'.
+src/components/map/Map.tsx(302,10): error TS2484: Export declaration conflicts with exported declaration of 'IntelligenceMap'.
+src/data/mock/environmental-provider.ts(11,15): error TS2300: Duplicate identifier 'GeographicLevel'.
+src/data/mock/environmental-provider.ts(12,69): error TS2300: Duplicate identifier 'GeographicLevel'.
+src/data/mock/environmental-provider.ts(12,69): error TS2459: Module '"@/data/mock/geographic-data"' declares 'GeographicLevel' locally, but it is not exported.
+src/data/mock/environmental-provider.ts(55,3): error TS2561: Object literal may only specify known properties, but 'windSpeed' does not exist in type 'Record<EnvironmentalVariableId, EnvironmentalVariable>'. Did you mean to write 'wind-speed'?
+src/data/mock/environmental-provider.ts(148,38): error TS2304: Cannot find name 'TemporalMode'.
+src/data/mock/environmental-provider.ts(180,5): error TS2561: Object literal may only specify known properties, but 'windSpeed' does not exist in type 'Record<EnvironmentalVariableId, number>'. Did you mean to write 'wind-speed'?
+src/data/mock/environmental-provider.ts(198,19): error TS2304: Cannot find name 'TemporalMode'.
+src/data/mock/environmental-provider.ts(211,33): error TS2339: Property 'getRegionsForLevel' does not exist on type 'MockEnvironmentalProvider'.
+src/data/mock/environmental-provider.ts(213,28): error TS2339: Property 'getRegionsForLevel' does not exist on type 'MockEnvironmentalProvider'.
+src/data/mock/environmental-provider.ts(222,16): error TS18048: 'variable' is possibly 'undefined'.
+src/data/mock/environmental-provider.ts(222,25): error TS2339: Property 'id' does not exist on type 'EnvironmentalVariableId'.
+  Property 'id' does not exist on type '"temperature"'.
+src/data/mock/environmental-provider.ts(223,19): error TS18048: 'variable' is possibly 'undefined'.
+src/data/mock/environmental-provider.ts(223,28): error TS2339: Property 'id' does not exist on type 'EnvironmentalVariableId'.
+  Property 'id' does not exist on type '"temperature"'.
+src/data/mock/environmental-provider.ts(296,23): error TS7053: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type 'Record<EnvironmentalVariableId, EnvironmentalVariable>'.
+  No index signature with a parameter of type 'string' was found on type 'Record<EnvironmentalVariableId, EnvironmentalVariable>'.
+src/data/mock/environmental-provider.ts(305,19): error TS2304: Cannot find name 'TemporalMode'.
+src/data/mock/environmental-provider.ts(306,14): error TS2304: Cannot find name 'NormalizedObservation'.
+src/data/repositories/environmental-repository.ts(118,61): error TS2339: Property 'getAllVariables' does not exist on type 'MockEnvironmentalProvider'.
+src/data/repositories/environmental-repository.ts(120,5): error TS2322: Type 'Record<EnvironmentalVariableId, EnvironmentalVariable> | null' is not assignable to type 'Record<EnvironmentalVariableId, EnvironmentalVariable>'.
+  Type 'null' is not assignable to type 'Record<EnvironmentalVariableId, EnvironmentalVariable>'.
+src/data/repositories/environmental-repository.ts(252,13): error TS2304: Cannot find name 'DataQuality'.
+src/geospatial/layers/layer-definitions.ts(11,27): error TS2345: Argument of type '{ id: string; name: string; description: string; category: string; unit: string; valueType: "measurement"; dataType: "numeric"; thresholds: number[]; colors: string[]; supportedGeographicLevels: string[]; supportedZoomLevels: [...]; source: string; }' is not assignable to parameter of type 'MapLayerDefinition'.
+  Property 'legend' is missing in type '{ id: string; name: string; description: string; category: string; unit: string; valueType: "measurement"; dataType: "numeric"; thresholds: number[]; colors: string[]; supportedGeographicLevels: string[]; supportedZoomLevels: [...]; source: string; }' but required in type 'MapLayerDefinition'.
+src/geospatial/layers/layer-definitions.ts(26,27): error TS2345: Argument of type '{ id: string; name: string; description: string; category: string; unit: string; valueType: "measurement"; dataType: "numeric"; thresholds: number[]; colors: string[]; supportedGeographicLevels: string[]; supportedZoomLevels: [...]; source: string; }' is not assignable to parameter of type 'MapLayerDefinition'.
+  Property 'legend' is missing in type '{ id: string; name: string; description: string; category: string; unit: string; valueType: "measurement"; dataType: "numeric"; thresholds: number[]; colors: string[]; supportedGeographicLevels: string[]; supportedZoomLevels: [...]; source: string; }' but required in type 'MapLayerDefinition'.
+src/geospatial/layers/layer-definitions.ts(41,27): error TS2345: Argument of type '{ id: string; name: string; description: string; category: string; unit: string; valueType: "measurement"; dataType: "numeric"; thresholds: number[]; colors: string[]; supportedGeographicLevels: string[]; supportedZoomLevels: [...]; source: string; }' is not assignable to parameter of type 'MapLayerDefinition'.
+  Property 'legend' is missing in type '{ id: string; name: string; description: string; category: string; unit: string; valueType: "measurement"; dataType: "numeric"; thresholds: number[]; colors: string[]; supportedGeographicLevels: string[]; supportedZoomLevels: [...]; source: string; }' but required in type 'MapLayerDefinition'.
+src/geospatial/layers/layer-definitions.ts(56,27): error TS2345: Argument of type '{ id: string; name: string; description: string; category: string; unit: string; valueType: "measurement"; dataType: "numeric"; thresholds: number[]; colors: string[]; supportedGeographicLevels: string[]; supportedZoomLevels: [...]; source: string; }' is not assignable to parameter of type 'MapLayerDefinition'.
+  Property 'legend' is missing in type '{ id: string; name: string; description: string; category: string; unit: string; valueType: "measurement"; dataType: "numeric"; thresholds: number[]; colors: string[]; supportedGeographicLevels: string[]; supportedZoomLevels: [...]; source: string; }' but required in type 'MapLayerDefinition'.
+src/geospatial/layers/layer-definitions.ts(71,27): error TS2345: Argument of type '{ id: string; name: string; description: string; category: string; unit: string; valueType: "measurement"; dataType: "numeric"; thresholds: number[]; colors: string[]; supportedGeographicLevels: string[]; supportedZoomLevels: [...]; source: string; }' is not assignable to parameter of type 'MapLayerDefinition'.
+  Property 'legend' is missing in type '{ id: string; name: string; description: string; category: string; unit: string; valueType: "measurement"; dataType: "numeric"; thresholds: number[]; colors: string[]; supportedGeographicLevels: string[]; supportedZoomLevels: [...]; source: string; }' but required in type 'MapLayerDefinition'.
+src/geospatial/layers/layer-definitions.ts(87,27): error TS2345: Argument of type '{ id: string; name: string; description: string; category: string; unit: string; valueType: "count"; dataType: "numeric"; thresholds: number[]; colors: string[]; supportedGeographicLevels: string[]; supportedZoomLevels: [...]; source: string; }' is not assignable to parameter of type 'MapLayerDefinition'.
+  Property 'legend' is missing in type '{ id: string; name: string; description: string; category: string; unit: string; valueType: "count"; dataType: "numeric"; thresholds: number[]; colors: string[]; supportedGeographicLevels: string[]; supportedZoomLevels: [...]; source: string; }' but required in type 'MapLayerDefinition'.
+src/geospatial/layers/layer-definitions.ts(102,27): error TS2345: Argument of type '{ id: string; name: string; description: string; category: string; unit: string; valueType: "density"; dataType: "numeric"; thresholds: number[]; colors: string[]; supportedGeographicLevels: string[]; supportedZoomLevels: [...]; source: string; }' is not assignable to parameter of type 'MapLayerDefinition'.
+  Property 'legend' is missing in type '{ id: string; name: string; description: string; category: string; unit: string; valueType: "density"; dataType: "numeric"; thresholds: number[]; colors: string[]; supportedGeographicLevels: string[]; supportedZoomLevels: [...]; source: string; }' but required in type 'MapLayerDefinition'.
+src/geospatial/layers/layer-definitions.ts(117,27): error TS2345: Argument of type '{ id: string; name: string; description: string; category: string; unit: string; valueType: "score"; dataType: "numeric"; thresholds: number[]; colors: string[]; supportedGeographicLevels: string[]; supportedZoomLevels: [...]; source: string; }' is not assignable to parameter of type 'MapLayerDefinition'.
+  Property 'legend' is missing in type '{ id: string; name: string; description: string; category: string; unit: string; valueType: "score"; dataType: "numeric"; thresholds: number[]; colors: string[]; supportedGeographicLevels: string[]; supportedZoomLevels: [...]; source: string; }' but required in type 'MapLayerDefinition'.
+src/geospatial/layers/layer-definitions.ts(133,27): error TS2345: Argument of type '{ id: string; name: string; description: string; category: string; unit: string; valueType: "count"; dataType: "count"; thresholds: number[]; colors: string[]; supportedGeographicLevels: string[]; supportedZoomLevels: [...]; source: string; }' is not assignable to parameter of type 'MapLayerDefinition'.
+  Property 'legend' is missing in type '{ id: string; name: string; description: string; category: string; unit: string; valueType: "count"; dataType: "count"; thresholds: number[]; colors: string[]; supportedGeographicLevels: string[]; supportedZoomLevels: [...]; source: string; }' but required in type 'MapLayerDefinition'.
+src/geospatial/layers/layer-definitions.ts(148,27): error TS2345: Argument of type '{ id: string; name: string; description: string; category: string; unit: string; valueType: "count"; dataType: "count"; thresholds: number[]; colors: string[]; supportedGeographicLevels: string[]; supportedZoomLevels: [...]; source: string; }' is not assignable to parameter of type 'MapLayerDefinition'.
+  Property 'legend' is missing in type '{ id: string; name: string; description: string; category: string; unit: string; valueType: "count"; dataType: "count"; thresholds: number[]; colors: string[]; supportedGeographicLevels: string[]; supportedZoomLevels: [...]; source: string; }' but required in type 'MapLayerDefinition'.
+src/geospatial/layers/layer-definitions.ts(164,27): error TS2345: Argument of type '{ id: string; name: string; description: string; category: string; unit: string; valueType: "score"; dataType: "numeric"; thresholds: number[]; colors: string[]; supportedGeographicLevels: string[]; supportedZoomLevels: [...]; source: string; }' is not assignable to parameter of type 'MapLayerDefinition'.
+  Property 'legend' is missing in type '{ id: string; name: string; description: string; category: string; unit: string; valueType: "score"; dataType: "numeric"; thresholds: number[]; colors: string[]; supportedGeographicLevels: string[]; supportedZoomLevels: [...]; source: string; }' but required in type 'MapLayerDefinition'.
+src/geospatial/layers/layer-definitions.ts(179,27): error TS2345: Argument of type '{ id: string; name: string; description: string; category: string; unit: string; valueType: "score"; dataType: "numeric"; thresholds: number[]; colors: string[]; supportedGeographicLevels: string[]; supportedZoomLevels: [...]; source: string; }' is not assignable to parameter of type 'MapLayerDefinition'.
+  Property 'legend' is missing in type '{ id: string; name: string; description: string; category: string; unit: string; valueType: "score"; dataType: "numeric"; thresholds: number[]; colors: string[]; supportedGeographicLevels: string[]; supportedZoomLevels: [...]; source: string; }' but required in type 'MapLayerDefinition'.
+src/geospatial/layers/layer-definitions.ts(194,27): error TS2345: Argument of type '{ id: string; name: string; description: string; category: string; unit: string; dataType: "numeric"; thresholds: number[]; colors: string[]; supportedGeographicLevels: string[]; supportedZoomLevels: [...]; source: string; }' is not assignable to parameter of type 'MapLayerDefinition'.
+  Property 'legend' is missing in type '{ id: string; name: string; description: string; category: string; unit: string; dataType: "numeric"; thresholds: number[]; colors: string[]; supportedGeographicLevels: string[]; supportedZoomLevels: [...]; source: string; }' but required in type 'MapLayerDefinition'.
+src/geospatial/layers/layer-definitions.ts(208,27): error TS2345: Argument of type '{ id: string; name: string; description: string; category: string; unit: string; valueType: "score"; dataType: "numeric"; thresholds: number[]; colors: string[]; supportedGeographicLevels: string[]; supportedZoomLevels: [...]; source: string; }' is not assignable to parameter of type 'MapLayerDefinition'.
+  Property 'legend' is missing in type '{ id: string; name: string; description: string; category: string; unit: string; valueType: "score"; dataType: "numeric"; thresholds: number[]; colors: string[]; supportedGeographicLevels: string[]; supportedZoomLevels: [...]; source: string; }' but required in type 'MapLayerDefinition'.
+src/geospatial/layers/layer-definitions.ts(224,27): error TS2345: Argument of type '{ id: string; name: string; description: string; category: string; unit: string; valueType: "count"; dataType: "count"; thresholds: number[]; colors: string[]; supportedGeographicLevels: string[]; supportedZoomLevels: [...]; source: string; }' is not assignable to parameter of type 'MapLayerDefinition'.
+  Property 'legend' is missing in type '{ id: string; name: string; description: string; category: string; unit: string; valueType: "count"; dataType: "count"; thresholds: number[]; colors: string[]; supportedGeographicLevels: string[]; supportedZoomLevels: [...]; source: string; }' but required in type 'MapLayerDefinition'.
+src/geospatial/layers/layer-definitions.ts(239,27): error TS2345: Argument of type '{ id: string; name: string; description: string; category: string; unit: string; valueType: "count"; dataType: "count"; thresholds: number[]; colors: string[]; supportedGeographicLevels: string[]; supportedZoomLevels: [...]; source: string; }' is not assignable to parameter of type 'MapLayerDefinition'.
+  Property 'legend' is missing in type '{ id: string; name: string; description: string; category: string; unit: string; valueType: "count"; dataType: "count"; thresholds: number[]; colors: string[]; supportedGeographicLevels: string[]; supportedZoomLevels: [...]; source: string; }' but required in type 'MapLayerDefinition'.
+src/geospatial/layers/layer-definitions.ts(254,27): error TS2345: Argument of type '{ id: string; name: string; description: string; category: string; unit: string; valueType: "percentage"; dataType: "numeric"; thresholds: number[]; colors: string[]; supportedGeographicLevels: string[]; supportedZoomLevels: [...]; source: string; }' is not assignable to parameter of type 'MapLayerDefinition'.
+  Property 'legend' is missing in type '{ id: string; name: string; description: string; category: string; unit: string; valueType: "percentage"; dataType: "numeric"; thresholds: number[]; colors: string[]; supportedGeographicLevels: string[]; supportedZoomLevels: [...]; source: string; }' but required in type 'MapLayerDefinition'.
+Failed to type check.
+

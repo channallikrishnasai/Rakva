@@ -35,7 +35,7 @@ export class MockRegionRepository implements RegionRepository {
     let current = await this.getRegionById(regionId);
     while (current) {
       path.unshift(current);
-      current = current.parentId ? await this.getRegionById(current.parentId) : undefined;
+      current = current.parentId ? await this.getRegionById(current.parentId) : null;
     }
     return path;
   }
