@@ -206,6 +206,7 @@ export interface MapLayerDefinition {
   id: string;
   name: string;
   description: string;
+  category?: string;
   unit?: string;
   dataType: 'numeric' | 'categorical' | 'boolean';
   legend: any; // Could be further typed based on legends
