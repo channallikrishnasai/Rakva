@@ -4,8 +4,7 @@ import {
   PriorityCategory, 
   PriorityFactor, 
   WhyFirstExplanation,
-  SeverityLevel,
-  ExplanationReason
+  SeverityLevel
 } from '../contracts';
 import { priorityRegistry } from './PriorityRegistry';
 
@@ -40,26 +39,12 @@ export class PriorityEngine {
 
   private buildWhyFirst(factors: PriorityFactor[], score: number, subjectId: string): WhyFirstExplanation {
     const sorted = [...factors].sort((a, b) => (b.contribution || 0) - (a.contribution || 0));
-    
-    const primary = sorted.slice(0, 2);
-    const contributing = sorted.slice(2, 5);
-
-    const primaryReasons: ExplanationReason[] = primary.map(f => ({
-      label: f.name,
-      detail: f.explanation
+    const top = sorted.slice(0, 4);
+    return top.map((f, i) => ({
+      order: i + 1,
+      title: f.name,
+      description: f.explanation,
     }));
-
-    const contributingFactors: ExplanationReason[] = contributing.map(f => ({
-      label: f.name,
-      detail: f.explanation
-    }));
-
-    return {
-      summary: `${subjectId} requires attention primarily due to ${primary[0]?.name?.toLowerCase() || 'multiple factors'}.`,
-      primaryReasons,
-      contributingFactors,
-      confidence: Math.round(factors.reduce((acc, f) => acc + (f.confidence || 0), 0) / (factors.length || 1)),
-    };
   }
 
   public assess(input: PriorityInput, configId: string = 'default'): PriorityAssessment {

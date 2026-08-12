@@ -142,11 +142,11 @@ function CommandCenterContent() {
         </div>
         <div className="rounded-lg border border-orange-500/20 bg-orange-500/5 p-3 text-center">
           <p className="text-[10px] text-slate-500 mb-1">HIGH PRIORITY</p>
-          <p className="text-2xl font-bold text-orange-400">{filteredAssets.filter(a => a.priorityMetrics?.priorityLabel === 'high').length}</p>
+          <p className="text-2xl font-bold text-orange-400">{filteredAssets.filter(a => a.priorityMetrics?.category === 'high').length}</p>
         </div>
         <div className="rounded-lg border border-red-500/20 bg-red-500/5 p-3 text-center">
           <p className="text-[10px] text-slate-500 mb-1">CRITICAL</p>
-          <p className="text-2xl font-bold text-red-400">{filteredAssets.filter(a => a.priorityMetrics?.priorityLabel === 'critical').length}</p>
+          <p className="text-2xl font-bold text-red-400">{filteredAssets.filter(a => a.priorityMetrics?.category === 'critical').length}</p>
         </div>
         <div className="rounded-lg border border-cyan-500/20 bg-cyan-500/5 p-3 text-center">
           <p className="text-[10px] text-slate-500 mb-1">EVIDENCE CONFIDENCE</p>

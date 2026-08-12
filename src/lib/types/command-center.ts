@@ -39,7 +39,7 @@ export interface DisasterAsset {
   impactDescription: string;
   recoveryPriority: number;
   basePriority: number;
-  priorityLabel: "critical" | "high" | "medium" | "low";
+  category: "critical" | "high" | "moderate" | "moderate-low" | "low";
   confidence: "high" | "moderate" | "low";
   consequenceLevel: ConsequenceLevel;
   consequenceDescription: string;

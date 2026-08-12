@@ -21,16 +21,15 @@ const dependencyConnections: Record<string, { targetId: string; label: string }[
   ],
 };
 
-// Adapter to convert old mock data to new Asset contract format
 function adaptDisasterAssetToAsset(da: any): Asset {
   return {
     id: da.id,
     name: da.name,
     type: da.assetType,
-    location: [da.mapPosition.x, da.mapPosition.y], // Mapping x/y to lat/lng conceptual
+    location: [da.mapPosition.x, da.mapPosition.y],
     regionId: da.region,
-    criticality: da.factors.criticality,
-    status: da.damageSeverity === 'critical' || da.damageSeverity === 'severe' ? 'failed' : 
+    criticality: da.factors?.criticality || 50,
+    status: da.damageSeverity === 'critical' || da.damageSeverity === 'severe' ? 'failed' :
             da.damageSeverity === 'moderate' || da.damageSeverity === 'minor' ? 'degraded' : 'operational',
     visualization: {
       mapPosition: da.mapPosition,
@@ -41,11 +40,25 @@ function adaptDisasterAssetToAsset(da: any): Asset {
     damageDescription: da.damageDescription,
     impactDescription: da.impactDescription,
     priorityMetrics: {
+      subjectId: da.id,
+      score: da.recoveryPriority || da.basePriority || 0,
+      priorityLabel: da.priorityLabel,
       basePriority: da.basePriority,
       recoveryPriority: da.recoveryPriority,
-      priorityLabel: da.priorityLabel,
-      factors: da.factors,
-      whyFirst: da.whyFirst,
+      category: (da.priorityLabel as any) || 'low',
+      factors: da.factors || {},
+      whyFirst: da.whyFirst || [],
+      modelId: 'mock-model',
+      modelVersion: '1.0.0',
+      assessedAt: new Date().toISOString(),
+      provenance: {
+        source: 'mock',
+        sourceType: 'model',
+        timestamp: new Date().toISOString(),
+        lastUpdated: new Date().toISOString(),
+        confidence: 0.8,
+        quality: 'estimated',
+      },
     },
     evidence: da.evidenceSources,
     overallEvidenceConfidence: da.overallEvidenceConfidence,

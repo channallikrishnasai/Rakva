@@ -266,7 +266,7 @@ function Bridge({ asset, isSelected, isSimulated, isSubdued, onClick }: {
   const groupRef = useRef<THREE.Group>(null);
   const pos = asset.visualization?.scenePosition || { x: 0, z: 0 };
   const opacity = isSubdued ? 0.25 : 1;
-  const col = isSimulated ? "#334155" : priorityColors[asset.priorityMetrics?.priorityLabel || "low"];
+  const col = isSimulated ? "#334155" : priorityColors[asset.priorityMetrics?.category || "low"];
 
   const elapsed = useRef(0);
 
@@ -333,7 +333,7 @@ function Bridge({ asset, isSelected, isSimulated, isSubdued, onClick }: {
       </Text>
       {isSelected && (
         <Text position={[0, 2.5, 0]} fontSize={0.2} color={col} anchorX="center" anchorY="middle" font={undefined}>
-          Priority: {asset.priorityMetrics?.recoveryPriority}
+          Priority: {asset.priorityMetrics?.score}
         </Text>
       )}
     </group>
@@ -348,7 +348,7 @@ function Hospital({ asset, isSelected, isSubdued, onClick }: {
   const groupRef = useRef<THREE.Group>(null);
   const pos = asset.visualization?.scenePosition || { x: 5, z: -5.5 };
   const opacity = isSubdued ? 0.25 : 1;
-  const col = priorityColors[asset.priorityMetrics?.priorityLabel || "low"];
+  const col = priorityColors[asset.priorityMetrics?.category || "low"];
 
   const elapsed = useRef(0);
 
@@ -417,7 +417,7 @@ function Building({ asset, isSelected, isSubdued, onClick }: {
   const groupRef = useRef<THREE.Group>(null);
   const pos = asset.visualization?.scenePosition || { x: -5, z: 3.5 };
   const opacity = isSubdued ? 0.25 : 1;
-  const col = priorityColors[asset.priorityMetrics?.priorityLabel || "low"];
+  const col = priorityColors[asset.priorityMetrics?.category || "low"];
 
   const dims = useMemo(() => {
     const h = asset.damageSeverity === "severe" ? 1.0 : asset.damageSeverity === "moderate" ? 1.3 : 1.6;
@@ -476,7 +476,7 @@ function Utility({ asset, isSelected, isSubdued, onClick }: {
   const groupRef = useRef<THREE.Group>(null);
   const pos = asset.visualization?.scenePosition || { x: -7, z: -2.5 };
   const opacity = isSubdued ? 0.25 : 1;
-  const col = priorityColors[asset.priorityMetrics?.priorityLabel || "low"];
+  const col = priorityColors[asset.priorityMetrics?.category || "low"];
 
   const elapsed = useRef(0);
 
@@ -617,7 +617,7 @@ function AffectedZone({ asset, visible }: { asset: Asset; visible: boolean }) {
   return (
     <mesh rotation={[-Math.PI / 2, 0, 0]} position={[pos.x, 0.025, pos.z]}>
       <circleGeometry args={[(asset.visualization?.affectedRadius || 10) / 3.5, 48]} />
-      <meshStandardMaterial color={priorityColors[asset.priorityMetrics?.priorityLabel || "low"]} transparent opacity={opacity} side={THREE.DoubleSide} />
+      <meshStandardMaterial color={priorityColors[asset.priorityMetrics?.category || "low"]} transparent opacity={opacity} side={THREE.DoubleSide} />
     </mesh>
   );
 }

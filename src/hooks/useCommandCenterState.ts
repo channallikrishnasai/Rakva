@@ -58,7 +58,17 @@ export function useCommandCenterState(): CommandCenterState {
     async function loadAssets() {
       setIsLoading(true);
       const repo = new MockAssetRepository();
-      const data = await repo.getAllAssets();
+      let data = await repo.getAllAssets();
+      
+      const priorityAssessments = priorityEngine.rank(mockPriorityInputs);
+      data = data.map(asset => {
+        const assessment = priorityAssessments.find(p => p.subjectId === asset.id);
+        if (assessment) {
+          asset.priorityMetrics = assessment;
+        }
+        return asset;
+      });
+
       setAssets(data);
       // Default selection if available
       if (data.length > 0 && !selectedAssetId) {
@@ -72,7 +82,7 @@ export function useCommandCenterState(): CommandCenterState {
   const filteredAssets = useMemo(() => {
     return assets.filter((a) => {
       if (filterAsset !== "all" && a.type !== filterAsset) return false;
-      if (filterPriority !== "all" && a.priorityMetrics?.priorityLabel !== filterPriority) return false;
+      if (filterPriority !== "all" && a.priorityMetrics?.category !== filterPriority) return false;
       if (filterEvidence !== "all" && !a.evidence?.some((e) => e.source === filterEvidence)) return false;
       return true;
     });
@@ -80,8 +90,8 @@ export function useCommandCenterState(): CommandCenterState {
 
   const priorityRankings = useMemo(() => {
     return [...filteredAssets].sort((a, b) => {
-      const pA = a.priorityMetrics?.recoveryPriority || 0;
-      const pB = b.priorityMetrics?.recoveryPriority || 0;
+      const pA = a.priorityMetrics?.score || 0;
+      const pB = b.priorityMetrics?.score || 0;
       return pB - pA;
     });
   }, [filteredAssets]);

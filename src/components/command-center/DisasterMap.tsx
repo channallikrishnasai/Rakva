@@ -132,8 +132,8 @@ export function DisasterMap({ assets, selectedAssetId, onSelectAsset }: Disaster
         {/* Asset markers */}
         {assets.map((asset) => {
           const isSelected = asset.id === selectedAssetId;
-          const priorityLabel = asset.priorityMetrics?.priorityLabel || "low";
-          const color = priorityColors[priorityLabel];
+          const category = asset.priorityMetrics?.category || "low";
+          const color = priorityColors[category];
           const r = isSelected ? 2.8 : 2;
           const pulseR = isSelected ? 4.5 : 0;
           const mx = asset.visualization?.mapPosition?.x || 0;
@@ -238,7 +238,7 @@ export function DisasterMap({ assets, selectedAssetId, onSelectAsset }: Disaster
                   fontFamily="monospace"
                   fontWeight="bold"
                 >
-                  P:{asset.priorityMetrics?.recoveryPriority}
+                  P:{asset.priorityMetrics?.score}
                 </text>
               )}
             </g>

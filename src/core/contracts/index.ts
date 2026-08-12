@@ -1,5 +1,5 @@
 export type ConfidenceLevel = 'low' | 'medium' | 'high' | 'critical';
-export type SeverityLevel = 'none' | 'minor' | 'moderate' | 'severe' | 'critical';
+export type SeverityLevel = 'none' | 'minor' | 'moderate' | 'severe' | 'critical' | 'unknown';
 import type { GeographicLevel } from '@/geospatial/types/geographic';
 
 export type EnvironmentalVariableId = 
@@ -169,24 +169,6 @@ export interface Asset {
   damageSeverity?: SeverityLevel;
   damageDescription?: string;
   impactDescription?: string;
-  priorityMetrics?: {
-    basePriority: number;
-    recoveryPriority: number;
-    priorityLabel: 'critical' | 'high' | 'medium' | 'low';
-    factors: {
-      damage: number;
-      people: number;
-      vulnerability: number;
-      criticality: number;
-      accessibility: number;
-      urgency: number;
-    };
-    whyFirst?: Array<{
-      order: number;
-      title: string;
-      description: string;
-    }>;
-  };
   evidence?: Array<{
     source: string;
     status: string;
@@ -245,22 +227,21 @@ export interface ExplanationReason {
   detail: string;
 }
 
-export interface WhyFirstExplanation {
-  summary: string;
-  primaryReasons: ExplanationReason[];
-  contributingFactors: ExplanationReason[];
-  riskIfDelayed?: string;
-  affectedServices?: string[];
-  affectedPopulation?: number;
-  confidence?: number;
-}
+export type WhyFirstExplanation = Array<{
+  order: number;
+  title: string;
+  description: string;
+}>;
 
 export interface PriorityAssessment {
   subjectId: string;
   score: number;
   rank?: number;
   category: PriorityCategory;
-  factors: PriorityFactor[];
+  priorityLabel?: 'critical' | 'high' | 'medium' | 'low';
+  basePriority?: number;
+  recoveryPriority?: number;
+  factors: Record<string, number> | PriorityFactor[];
   whyFirst: WhyFirstExplanation;
   confidence?: number;
   provenance: DataProvenance;
@@ -544,4 +525,117 @@ export interface HistoricalHazardEvent {
   dataSource?: string;
 }
 
+// ═══════════════════════════════════════════════════════════════
+// Phase 7 — Evidence Intelligence Layer
+// ═══════════════════════════════════════════════════════════════
+
+export type EvidenceType =
+  | 'satellite_image'
+  | 'drone_footage'
+  | 'citizen_report'
+  | 'sensor_reading'
+  | 'official_report'
+  | 'social_media'
+  | 'news_media'
+  | 'field_assessment';
+
+export type EvidenceStatus =
+  | 'pending'
+  | 'verifying'
+  | 'verified'
+  | 'rejected'
+  | 'conflict'
+  | 'superseded';
+
+export type EvidenceConfidence = 'low' | 'medium' | 'high' | 'very-high';
+
+export interface EvidenceSource {
+  id: string;
+  name: string;
+  type: EvidenceType;
+  provider: string;
+  reliability: number; // 0-100
+  timeliness: number; // 0-100
+  spatialResolution: number; // 0-100
+  status: 'active' | 'inactive' | 'degraded';
+  lastUpdated: string;
+}
+
+export interface EvidenceIntelligence {
+  id: string;
+  sourceId: string;
+  type: EvidenceType;
+  status: EvidenceStatus;
+  description: string;
+  location: [number, number];
+  regionId: string;
+  assetId?: string;
+  timestamp: string;
+  capturedAt?: string;
+  url?: string;
+  thumbnailUrl?: string;
+  confidence: EvidenceConfidence;
+  confidenceScore: number; // 0-100
+  quality: DataQuality;
+  provenance: DataProvenance;
+  tags: string[];
+  metadata?: Record<string, any>;
+}
+
+export interface EvidenceFusionInput {
+  evidenceItems: EvidenceIntelligence[];
+  sourceWeights?: Record<string, number>;
+  temporalDecayHours?: number;
+  minimumConfidence?: number;
+}
+
+export interface EvidenceFusionResult {
+  id: string;
+  targetId: string; // asset or region ID
+  targetType: 'asset' | 'region';
+  fusedConfidence: EvidenceConfidence;
+  fusedConfidenceScore: number; // 0-100
+  evidenceCount: number;
+  verifiedCount: number;
+  conflictCount: number;
+  sources: string[]; // source IDs
+  summary: string;
+  breakdown: EvidenceBreakdownItem[];
+  conflictFlags: EvidenceConflictFlag[];
+  fusedAt: string;
+  modelVersion: string;
+}
+
+export interface EvidenceBreakdownItem {
+  sourceId: string;
+  sourceName: string;
+  evidenceType: EvidenceType;
+  weight: number;
+  contribution: number;
+  confidence: number;
+  status: EvidenceStatus;
+}
+
+export interface EvidenceConflictFlag {
+  sourceA: string;
+  sourceB: string;
+  description: string;
+  severity: 'low' | 'medium' | 'high';
+}
+
+export interface EvidenceFilter {
+  types?: EvidenceType[];
+  statuses?: EvidenceStatus[];
+  confidence?: EvidenceConfidence[];
+  dateRange?: { from: string; to: string };
+  regionId?: string;
+  assetId?: string;
+  searchQuery?: string;
+}
+
+export interface EvidenceTimelineItem {
+  evidence: EvidenceIntelligence;
+  fusionResult?: EvidenceFusionResult;
+  relativeTime: string;
+}
 

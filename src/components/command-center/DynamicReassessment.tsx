@@ -32,7 +32,7 @@ export function DynamicReassessment({ asset, simulationEvent, onSimulate, simula
             </div>
             <div className="flex items-baseline gap-2 mt-1">
               <span className="text-[10px] text-slate-500">Priority:</span>
-              <span className="text-lg font-bold text-cyan-400">{asset.priorityMetrics?.basePriority}</span>
+              <span className="text-lg font-bold text-cyan-400">{asset.priorityMetrics?.score}</span>
             </div>
           </div>
           <button

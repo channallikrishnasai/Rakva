@@ -29,10 +29,10 @@ const confidenceColor: Record<string, string> = {
 };
 
 export function AssetIntelligencePanel({ asset, animatingPriority }: AssetIntelligencePanelProps) {
-  const priorityLabel = asset.priorityMetrics?.priorityLabel || "low";
-  const recoveryPriority = asset.priorityMetrics?.recoveryPriority || 0;
-  const accent = priorityAccent[priorityLabel] || priorityAccent.low;
-  const displayPriority = animatingPriority ? animatingPriority.to : recoveryPriority;
+  const category = asset.priorityMetrics?.category || "low";
+  const score = asset.priorityMetrics?.score || 0;
+  const accent = priorityAccent[category] || priorityAccent.low;
+  const displayPriority = animatingPriority ? animatingPriority.to : score;
   const showChange = animatingPriority && animatingPriority.from !== animatingPriority.to;
 
   return (
@@ -59,7 +59,7 @@ export function AssetIntelligencePanel({ asset, animatingPriority }: AssetIntell
                 </span>
               )}
             </div>
-            <span className="text-[10px] font-mono text-slate-500">#{priorityLabel.toUpperCase()}</span>
+            <span className="text-[10px] font-mono text-slate-500">#{category.toUpperCase()}</span>
           </div>
         </div>
       </div>
@@ -105,7 +105,7 @@ export function AssetIntelligencePanel({ asset, animatingPriority }: AssetIntell
       </div>
 
       {/* WHY FIRST - Most Important Section */}
-      {asset.priorityMetrics?.whyFirst && asset.priorityMetrics.whyFirst.length > 0 && (
+      {asset.priorityMetrics?.whyFirst && Array.isArray(asset.priorityMetrics.whyFirst) && asset.priorityMetrics.whyFirst.length > 0 && (
         <div className="rounded-lg border border-cyan-500/20 bg-cyan-500/5 p-4">
           <div className="flex items-center gap-2 mb-3">
             <div className="flex h-5 w-5 items-center justify-center rounded bg-cyan-500/20 text-[10px] font-bold text-cyan-400">
@@ -114,14 +114,14 @@ export function AssetIntelligencePanel({ asset, animatingPriority }: AssetIntell
             <h4 className="text-xs font-bold tracking-wider text-cyan-400">WHY FIRST?</h4>
           </div>
           <div className="space-y-3">
-            {asset.priorityMetrics.whyFirst.map((reason) => (
-              <div key={reason.order} className="flex gap-3">
+            {asset.priorityMetrics.whyFirst.map((reason: any, idx: number) => (
+              <div key={idx} className="flex gap-3">
                 <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-cyan-500/30 bg-cyan-500/10 text-[10px] font-bold text-cyan-400">
-                  {String(reason.order).padStart(2, "0")}
+                  {String(reason.order || idx + 1).padStart(2, "0")}
                 </span>
                 <div>
-                  <p className="text-[11px] font-semibold text-slate-200">{reason.title}</p>
-                  <p className="text-[11px] text-slate-400 leading-relaxed">{reason.description}</p>
+                  <p className="text-[11px] font-semibold text-slate-200">{reason.title || reason.label}</p>
+                  <p className="text-[11px] text-slate-400 leading-relaxed">{reason.description || reason.detail}</p>
                 </div>
               </div>
             ))}
@@ -186,18 +186,21 @@ export function AssetIntelligencePanel({ asset, animatingPriority }: AssetIntell
         <div className="rounded-lg border border-slate-700/30 bg-slate-800/30 p-3">
           <span className="text-[10px] font-medium text-slate-500">PRIORITY FACTORS</span>
           <div className="mt-2 space-y-1.5">
-            {Object.entries(asset.priorityMetrics.factors).map(([key, value]) => (
-              <div key={key} className="flex items-center gap-2">
-                <span className="w-24 text-[10px] text-slate-400 capitalize">{key}</span>
+            {(Array.isArray(asset.priorityMetrics.factors) 
+              ? asset.priorityMetrics.factors.map((f: any) => ({ name: f.name, value: f.contribution || f.normalizedValue || 0 }))
+              : Object.entries(asset.priorityMetrics.factors).map(([name, value]) => ({ name, value: value as number }))
+            ).map((factor: any, idx: number) => (
+              <div key={idx} className="flex items-center gap-2">
+                <span className="w-24 text-[10px] text-slate-400 capitalize truncate" title={factor.name}>{factor.name}</span>
                 <div className="flex-1 h-1.5 rounded-full bg-slate-700/50 overflow-hidden">
                   <div
                     className={`h-full rounded-full ${
-                      value >= 80 ? "bg-red-400" : value >= 60 ? "bg-orange-400" : value >= 40 ? "bg-yellow-400" : "bg-slate-500"
+                      factor.value >= 20 ? "bg-red-400" : factor.value >= 10 ? "bg-orange-400" : factor.value >= 5 ? "bg-yellow-400" : "bg-slate-500"
                     }`}
-                    style={{ width: `${value}%` }}
+                    style={{ width: `${Math.min(100, Math.max(0, factor.value))}%` }}
                   />
                 </div>
-                <span className="w-8 text-right text-[10px] font-mono text-slate-500">{value}</span>
+                <span className="w-8 text-right text-[10px] font-mono text-slate-500">{Math.round(factor.value)}</span>
               </div>
             ))}
           </div>
