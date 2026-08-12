@@ -1,9 +1,9 @@
 "use client";
 
-import type { DisasterAsset } from "@/lib/types/command-center";
+import type { Asset } from "@/core/contracts";
 
 interface AssetIntelligencePanelProps {
-  asset: DisasterAsset;
+  asset: Asset;
   animatingPriority?: { from: number; to: number } | null;
 }
 
@@ -29,8 +29,10 @@ const confidenceColor: Record<string, string> = {
 };
 
 export function AssetIntelligencePanel({ asset, animatingPriority }: AssetIntelligencePanelProps) {
-  const accent = priorityAccent[asset.priorityLabel];
-  const displayPriority = animatingPriority ? animatingPriority.to : asset.recoveryPriority;
+  const priorityLabel = asset.priorityMetrics?.priorityLabel || "low";
+  const recoveryPriority = asset.priorityMetrics?.recoveryPriority || 0;
+  const accent = priorityAccent[priorityLabel] || priorityAccent.low;
+  const displayPriority = animatingPriority ? animatingPriority.to : recoveryPriority;
   const showChange = animatingPriority && animatingPriority.from !== animatingPriority.to;
 
   return (
@@ -40,7 +42,7 @@ export function AssetIntelligencePanel({ asset, animatingPriority }: AssetIntell
         <div className="flex items-center justify-between">
           <div>
             <span className="text-[10px] font-mono tracking-wider text-slate-500">
-              {asset.assetType.toUpperCase()}
+              {asset.type.toUpperCase()}
             </span>
             <h3 className="mt-0.5 text-sm font-bold text-white">{asset.id}</h3>
             <p className="text-xs text-slate-400">{asset.name}</p>
@@ -57,7 +59,7 @@ export function AssetIntelligencePanel({ asset, animatingPriority }: AssetIntell
                 </span>
               )}
             </div>
-            <span className="text-[10px] font-mono text-slate-500">#{asset.priorityLabel.toUpperCase()}</span>
+            <span className="text-[10px] font-mono text-slate-500">#{priorityLabel.toUpperCase()}</span>
           </div>
         </div>
       </div>
@@ -67,25 +69,25 @@ export function AssetIntelligencePanel({ asset, animatingPriority }: AssetIntell
         <div className="rounded-md border border-slate-700/30 bg-slate-800/50 p-3">
           <span className="text-[10px] text-slate-500">DAMAGE</span>
           <p className="mt-0.5 text-sm font-semibold text-slate-200">
-            {severityLabels[asset.damageSeverity]}
+            {asset.damageSeverity ? severityLabels[asset.damageSeverity] || asset.damageSeverity.toUpperCase() : "UNKNOWN"}
           </p>
         </div>
         <div className="rounded-md border border-slate-700/30 bg-slate-800/50 p-3">
           <span className="text-[10px] text-slate-500">IMPACT</span>
           <p className="mt-0.5 text-sm font-semibold text-slate-200">
-            {asset.consequenceLevel.toUpperCase()}
+            {asset.consequenceLevel ? asset.consequenceLevel.toUpperCase() : "UNKNOWN"}
           </p>
         </div>
         <div className="rounded-md border border-slate-700/30 bg-slate-800/50 p-3">
           <span className="text-[10px] text-slate-500">ACCESSIBILITY</span>
           <p className="mt-0.5 text-sm font-semibold text-slate-200">
-            {asset.accessibility.replace("_", " ").toUpperCase()}
+            {asset.accessibility ? asset.accessibility.replace("_", " ").toUpperCase() : "UNKNOWN"}
           </p>
         </div>
         <div className="rounded-md border border-slate-700/30 bg-slate-800/50 p-3">
           <span className="text-[10px] text-slate-500">URGENCY</span>
           <p className={`mt-0.5 text-sm font-semibold ${asset.urgency === "high" ? "text-red-400" : asset.urgency === "moderate" ? "text-yellow-400" : "text-slate-400"}`}>
-            {asset.urgency.toUpperCase()}
+            {asset.urgency ? asset.urgency.toUpperCase() : "UNKNOWN"}
           </p>
         </div>
       </div>
@@ -94,47 +96,49 @@ export function AssetIntelligencePanel({ asset, animatingPriority }: AssetIntell
       <div className="rounded-md border border-slate-700/30 bg-slate-800/30 p-3 space-y-2">
         <div>
           <span className="text-[10px] font-medium text-slate-500">DAMAGE ASSESSMENT</span>
-          <p className="mt-0.5 text-xs text-slate-300 leading-relaxed">{asset.damageDescription}</p>
+          <p className="mt-0.5 text-xs text-slate-300 leading-relaxed">{asset.damageDescription || "No description provided."}</p>
         </div>
         <div className="border-t border-slate-700/30 pt-2">
           <span className="text-[10px] font-medium text-slate-500">CONSEQUENCE</span>
-          <p className="mt-0.5 text-xs text-slate-300 leading-relaxed">{asset.consequenceDescription}</p>
+          <p className="mt-0.5 text-xs text-slate-300 leading-relaxed">{asset.consequenceDescription || "No consequence provided."}</p>
         </div>
       </div>
 
       {/* WHY FIRST - Most Important Section */}
-      <div className="rounded-lg border border-cyan-500/20 bg-cyan-500/5 p-4">
-        <div className="flex items-center gap-2 mb-3">
-          <div className="flex h-5 w-5 items-center justify-center rounded bg-cyan-500/20 text-[10px] font-bold text-cyan-400">
-            ?
-          </div>
-          <h4 className="text-xs font-bold tracking-wider text-cyan-400">WHY FIRST?</h4>
-        </div>
-        <div className="space-y-3">
-          {asset.whyFirst.map((reason) => (
-            <div key={reason.order} className="flex gap-3">
-              <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-cyan-500/30 bg-cyan-500/10 text-[10px] font-bold text-cyan-400">
-                {String(reason.order).padStart(2, "0")}
-              </span>
-              <div>
-                <p className="text-[11px] font-semibold text-slate-200">{reason.title}</p>
-                <p className="text-[11px] text-slate-400 leading-relaxed">{reason.description}</p>
-              </div>
+      {asset.priorityMetrics?.whyFirst && asset.priorityMetrics.whyFirst.length > 0 && (
+        <div className="rounded-lg border border-cyan-500/20 bg-cyan-500/5 p-4">
+          <div className="flex items-center gap-2 mb-3">
+            <div className="flex h-5 w-5 items-center justify-center rounded bg-cyan-500/20 text-[10px] font-bold text-cyan-400">
+              ?
             </div>
-          ))}
+            <h4 className="text-xs font-bold tracking-wider text-cyan-400">WHY FIRST?</h4>
+          </div>
+          <div className="space-y-3">
+            {asset.priorityMetrics.whyFirst.map((reason) => (
+              <div key={reason.order} className="flex gap-3">
+                <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-cyan-500/30 bg-cyan-500/10 text-[10px] font-bold text-cyan-400">
+                  {String(reason.order).padStart(2, "0")}
+                </span>
+                <div>
+                  <p className="text-[11px] font-semibold text-slate-200">{reason.title}</p>
+                  <p className="text-[11px] text-slate-400 leading-relaxed">{reason.description}</p>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Evidence Confidence */}
       <div className="rounded-lg border border-slate-700/30 bg-slate-800/30 p-3">
         <div className="flex items-center justify-between mb-2">
           <span className="text-[10px] font-medium text-slate-500">EVIDENCE CONFIDENCE</span>
-          <span className={`text-xs font-bold ${confidenceColor[asset.overallEvidenceConfidence]}`}>
-            {asset.overallEvidenceConfidence.toUpperCase()}
+          <span className={`text-xs font-bold ${asset.overallEvidenceConfidence ? confidenceColor[asset.overallEvidenceConfidence] || "text-slate-400" : "text-slate-400"}`}>
+            {(asset.overallEvidenceConfidence || "UNKNOWN").toUpperCase()}
           </span>
         </div>
         <div className="grid grid-cols-2 gap-1.5">
-          {asset.evidenceSources.map((ev) => (
+          {(asset.evidence || []).map((ev) => (
             <div
               key={ev.source}
               className="flex items-center gap-1.5 rounded bg-slate-900/50 px-2 py-1"
@@ -178,25 +182,27 @@ export function AssetIntelligencePanel({ asset, animatingPriority }: AssetIntell
       </div>
 
       {/* Priority Factors Breakdown */}
-      <div className="rounded-lg border border-slate-700/30 bg-slate-800/30 p-3">
-        <span className="text-[10px] font-medium text-slate-500">PRIORITY FACTORS</span>
-        <div className="mt-2 space-y-1.5">
-          {Object.entries(asset.factors).map(([key, value]) => (
-            <div key={key} className="flex items-center gap-2">
-              <span className="w-24 text-[10px] text-slate-400 capitalize">{key}</span>
-              <div className="flex-1 h-1.5 rounded-full bg-slate-700/50 overflow-hidden">
-                <div
-                  className={`h-full rounded-full ${
-                    value >= 80 ? "bg-red-400" : value >= 60 ? "bg-orange-400" : value >= 40 ? "bg-yellow-400" : "bg-slate-500"
-                  }`}
-                  style={{ width: `${value}%` }}
-                />
+      {asset.priorityMetrics?.factors && (
+        <div className="rounded-lg border border-slate-700/30 bg-slate-800/30 p-3">
+          <span className="text-[10px] font-medium text-slate-500">PRIORITY FACTORS</span>
+          <div className="mt-2 space-y-1.5">
+            {Object.entries(asset.priorityMetrics.factors).map(([key, value]) => (
+              <div key={key} className="flex items-center gap-2">
+                <span className="w-24 text-[10px] text-slate-400 capitalize">{key}</span>
+                <div className="flex-1 h-1.5 rounded-full bg-slate-700/50 overflow-hidden">
+                  <div
+                    className={`h-full rounded-full ${
+                      value >= 80 ? "bg-red-400" : value >= 60 ? "bg-orange-400" : value >= 40 ? "bg-yellow-400" : "bg-slate-500"
+                    }`}
+                    style={{ width: `${value}%` }}
+                  />
+                </div>
+                <span className="w-8 text-right text-[10px] font-mono text-slate-500">{value}</span>
               </div>
-              <span className="w-8 text-right text-[10px] font-mono text-slate-500">{value}</span>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

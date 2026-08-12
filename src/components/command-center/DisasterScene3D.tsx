@@ -4,13 +4,13 @@ import { useRef, useMemo, useState, useEffect, useCallback } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { OrbitControls, Text, Line } from "@react-three/drei";
 import * as THREE from "three";
-import type { DisasterAsset } from "@/lib/types/command-center";
+import type { Asset } from "@/core/contracts";
 
 export type SceneLayer = "situation" | "damage" | "dependencies" | "recovery";
 
 interface DisasterScene3DProps {
-  assets: DisasterAsset[];
-  selectedAssetId: string;
+  assets: Asset[];
+  selectedAssetId: string | null;
   onSelectAsset: (id: string) => void;
   whatIfActive: boolean;
   sceneLayer: SceneLayer;
@@ -23,28 +23,7 @@ const priorityColors: Record<string, string> = {
   low: "#64748b",
 };
 
-const assetPositions: Record<string, { x: number; z: number }> = {
-  "BRIDGE-024": { x: 0, z: -2 },
-  "HOSPITAL-002": { x: 5, z: -5.5 },
-  "BUILDING-031": { x: -5, z: 3.5 },
-  "ROAD-017": { x: 3, z: 2 },
-  "ROAD-041": { x: 7, z: -2.5 },
-  "BUILDING-018": { x: -3, z: 0.5 },
-  "UTILITY-009": { x: -7, z: -2.5 },
-  "BRIDGE-031": { x: 2, z: 5.5 },
-};
-
-const dependencyConnections: Record<string, { targetId: string; label: string }[]> = {
-  "BRIDGE-024": [
-    { targetId: "HOSPITAL-002", label: "HOSPITAL DEPENDENCY" },
-    { targetId: "BUILDING-031", label: "POPULATION DEPENDENCY" },
-    { targetId: "ROAD-017", label: "ACCESSIBILITY" },
-  ],
-};
-
-/* ─────────────────────── CAMERA ─────────────────────── */
-
-function CameraController({ selectedAssetId }: { selectedAssetId: string }) {
+function CameraController({ assets, selectedAssetId }: { assets: Asset[]; selectedAssetId: string | null }) {
   const { camera } = useThree();
   const targetPos = useRef(new THREE.Vector3(0, 14, 16));
   const targetLookAt = useRef(new THREE.Vector3(0, 0, 0));
@@ -52,7 +31,8 @@ function CameraController({ selectedAssetId }: { selectedAssetId: string }) {
 
   useEffect(() => {
     t.current = 0;
-    const pos = assetPositions[selectedAssetId];
+    const asset = assets.find(a => a.id === selectedAssetId);
+    const pos = asset?.visualization?.scenePosition;
     if (pos) {
       targetPos.current.set(pos.x + 4, 9, pos.z + 9);
       targetLookAt.current.set(pos.x, 0.5, pos.z);
@@ -60,7 +40,7 @@ function CameraController({ selectedAssetId }: { selectedAssetId: string }) {
       targetPos.current.set(0, 14, 16);
       targetLookAt.current.set(0, 0, 0);
     }
-  }, [selectedAssetId]);
+  }, [assets, selectedAssetId]);
 
   useFrame((_, delta) => {
     t.current = Math.min(t.current + delta * 1.2, 1);
@@ -281,12 +261,12 @@ function CommunityCluster({ position, label, opacity }: { position: [number, num
 /* ─────────────────────── BRIDGE (detailed) ─────────────────────── */
 
 function Bridge({ asset, isSelected, isSimulated, isSubdued, onClick }: {
-  asset: DisasterAsset; isSelected: boolean; isSimulated: boolean; isSubdued: boolean; onClick: () => void;
+  asset: Asset; isSelected: boolean; isSimulated: boolean; isSubdued: boolean; onClick: () => void;
 }) {
   const groupRef = useRef<THREE.Group>(null);
-  const pos = assetPositions[asset.id] || { x: 0, z: 0 };
+  const pos = asset.visualization?.scenePosition || { x: 0, z: 0 };
   const opacity = isSubdued ? 0.25 : 1;
-  const col = isSimulated ? "#334155" : priorityColors[asset.priorityLabel];
+  const col = isSimulated ? "#334155" : priorityColors[asset.priorityMetrics?.priorityLabel || "low"];
 
   const elapsed = useRef(0);
 
@@ -353,7 +333,7 @@ function Bridge({ asset, isSelected, isSimulated, isSubdued, onClick }: {
       </Text>
       {isSelected && (
         <Text position={[0, 2.5, 0]} fontSize={0.2} color={col} anchorX="center" anchorY="middle" font={undefined}>
-          Priority: {asset.recoveryPriority}
+          Priority: {asset.priorityMetrics?.recoveryPriority}
         </Text>
       )}
     </group>
@@ -363,12 +343,12 @@ function Bridge({ asset, isSelected, isSimulated, isSubdued, onClick }: {
 /* ─────────────────────── HOSPITAL (distinctive) ─────────────────────── */
 
 function Hospital({ asset, isSelected, isSubdued, onClick }: {
-  asset: DisasterAsset; isSelected: boolean; isSubdued: boolean; onClick: () => void;
+  asset: Asset; isSelected: boolean; isSubdued: boolean; onClick: () => void;
 }) {
   const groupRef = useRef<THREE.Group>(null);
-  const pos = assetPositions[asset.id] || { x: 5, z: -5.5 };
+  const pos = asset.visualization?.scenePosition || { x: 5, z: -5.5 };
   const opacity = isSubdued ? 0.25 : 1;
-  const col = priorityColors[asset.priorityLabel];
+  const col = priorityColors[asset.priorityMetrics?.priorityLabel || "low"];
 
   const elapsed = useRef(0);
 
@@ -432,12 +412,12 @@ function Hospital({ asset, isSelected, isSubdued, onClick }: {
 /* ─────────────────────── BUILDING (varied) ─────────────────────── */
 
 function Building({ asset, isSelected, isSubdued, onClick }: {
-  asset: DisasterAsset; isSelected: boolean; isSubdued: boolean; onClick: () => void;
+  asset: Asset; isSelected: boolean; isSubdued: boolean; onClick: () => void;
 }) {
   const groupRef = useRef<THREE.Group>(null);
-  const pos = assetPositions[asset.id] || { x: -5, z: 3.5 };
+  const pos = asset.visualization?.scenePosition || { x: -5, z: 3.5 };
   const opacity = isSubdued ? 0.25 : 1;
-  const col = priorityColors[asset.priorityLabel];
+  const col = priorityColors[asset.priorityMetrics?.priorityLabel || "low"];
 
   const dims = useMemo(() => {
     const h = asset.damageSeverity === "severe" ? 1.0 : asset.damageSeverity === "moderate" ? 1.3 : 1.6;
@@ -491,12 +471,12 @@ function Building({ asset, isSelected, isSubdued, onClick }: {
 /* ─────────────────────── UTILITY ─────────────────────── */
 
 function Utility({ asset, isSelected, isSubdued, onClick }: {
-  asset: DisasterAsset; isSelected: boolean; isSubdued: boolean; onClick: () => void;
+  asset: Asset; isSelected: boolean; isSubdued: boolean; onClick: () => void;
 }) {
   const groupRef = useRef<THREE.Group>(null);
-  const pos = assetPositions[asset.id] || { x: -7, z: -2.5 };
+  const pos = asset.visualization?.scenePosition || { x: -7, z: -2.5 };
   const opacity = isSubdued ? 0.25 : 1;
-  const col = priorityColors[asset.priorityLabel];
+  const col = priorityColors[asset.priorityMetrics?.priorityLabel || "low"];
 
   const elapsed = useRef(0);
 
@@ -623,8 +603,8 @@ function EvidenceCluster({ position, visible, confidence }: { position: [number,
 
 /* ─────────────────────── AFFECTED ZONE ─────────────────────── */
 
-function AffectedZone({ asset, visible }: { asset: DisasterAsset; visible: boolean }) {
-  const pos = assetPositions[asset.id] || { x: 0, z: 0 };
+function AffectedZone({ asset, visible }: { asset: Asset; visible: boolean }) {
+  const pos = asset.visualization?.scenePosition || { x: 0, z: 0 };
   const [opacity, setOpacity] = useState(0);
 
   useFrame(() => {
@@ -636,8 +616,8 @@ function AffectedZone({ asset, visible }: { asset: DisasterAsset; visible: boole
 
   return (
     <mesh rotation={[-Math.PI / 2, 0, 0]} position={[pos.x, 0.025, pos.z]}>
-      <circleGeometry args={[asset.affectedRadius / 3.5, 48]} />
-      <meshStandardMaterial color={priorityColors[asset.priorityLabel]} transparent opacity={opacity} side={THREE.DoubleSide} />
+      <circleGeometry args={[(asset.visualization?.affectedRadius || 10) / 3.5, 48]} />
+      <meshStandardMaterial color={priorityColors[asset.priorityMetrics?.priorityLabel || "low"]} transparent opacity={opacity} side={THREE.DoubleSide} />
     </mesh>
   );
 }
@@ -650,10 +630,10 @@ function Scene({ assets, selectedAssetId, onSelectAsset, whatIfActive, sceneLaye
   const isRelatedToSelection = useCallback((assetId: string) => {
     if (!selectedAssetId) return false;
     if (assetId === selectedAssetId) return true;
-    const deps = dependencyConnections[selectedAssetId];
-    if (deps) return deps.some((d) => d.targetId === assetId);
+    const asset = assets.find(a => a.id === selectedAssetId);
+    if (asset?.dependencies) return asset.dependencies.some((d) => d.targetId === assetId);
     return false;
-  }, [selectedAssetId]);
+  }, [selectedAssetId, assets]);
 
   const isSubdued = useCallback((assetId: string) => {
     if (!selectedAssetId) return false;
@@ -665,13 +645,13 @@ function Scene({ assets, selectedAssetId, onSelectAsset, whatIfActive, sceneLaye
     return isRelatedToSelection(assetId) ? 1 : 0.2;
   }, [selectedAssetId, isRelatedToSelection]);
 
-  const getAssetComponent = useCallback((asset: DisasterAsset) => {
+  const getAssetComponent = useCallback((asset: Asset) => {
     const isSelected = asset.id === selectedAssetId;
     const isSim = whatIfActive && asset.id === "BRIDGE-024";
     const subdued = sceneLayer === "dependencies" || sceneLayer === "recovery" ? isSubdued(asset.id) : false;
     const onClick = () => onSelectAsset(asset.id);
 
-    switch (asset.assetType) {
+    switch (asset.type) {
       case "bridge":
         return <Bridge key={asset.id} asset={asset} isSelected={isSelected} isSimulated={isSim} isSubdued={subdued} onClick={onClick} />;
       case "hospital":
@@ -686,11 +666,14 @@ function Scene({ assets, selectedAssetId, onSelectAsset, whatIfActive, sceneLaye
   }, [selectedAssetId, onSelectAsset, whatIfActive, sceneLayer, isSubdued]);
 
   const dependencyLines = useMemo(() => {
-    if (!selectedAssetId || !dependencyConnections[selectedAssetId]) return [];
-    const sourcePos = assetPositions[selectedAssetId];
+    if (!selectedAssetId) return [];
+    const sourceAsset = assets.find(a => a.id === selectedAssetId);
+    if (!sourceAsset || !sourceAsset.dependencies) return [];
+    const sourcePos = sourceAsset.visualization?.scenePosition;
     if (!sourcePos) return [];
-    return dependencyConnections[selectedAssetId].map((dep, i) => {
-      const targetPos = assetPositions[dep.targetId];
+    return sourceAsset.dependencies.map((dep, i) => {
+      const targetAsset = assets.find(a => a.id === dep.targetId);
+      const targetPos = targetAsset?.visualization?.scenePosition;
       if (!targetPos) return null;
       return {
         from: [sourcePos.x, 1.5, sourcePos.z] as [number, number, number],
@@ -700,7 +683,7 @@ function Scene({ assets, selectedAssetId, onSelectAsset, whatIfActive, sceneLaye
         delay: i * 400,
       };
     }).filter(Boolean);
-  }, [selectedAssetId]);
+  }, [selectedAssetId, assets]);
 
   const showDeps = sceneLayer === "dependencies" || sceneLayer === "situation";
   const showDamage = sceneLayer === "damage" || sceneLayer === "situation";
@@ -724,7 +707,7 @@ function Scene({ assets, selectedAssetId, onSelectAsset, whatIfActive, sceneLaye
       <directionalLight position={[-5, 8, -4]} intensity={0.15} color="#4a6fa5" />
       <fog attach="fog" args={["#0a0e1a", 18, 40]} />
 
-      <CameraController selectedAssetId={selectedAssetId} />
+      <CameraController assets={assets} selectedAssetId={selectedAssetId} />
 
       {/* Environment */}
       <Terrain />
@@ -768,9 +751,9 @@ function Scene({ assets, selectedAssetId, onSelectAsset, whatIfActive, sceneLaye
       {/* Evidence cluster */}
       {selectedAsset && (
         <EvidenceCluster
-          position={[assetPositions[selectedAsset.id]?.x ?? 0, 0, assetPositions[selectedAsset.id]?.z ?? 0]}
+          position={[selectedAsset.visualization?.scenePosition?.x ?? 0, 0, selectedAsset.visualization?.scenePosition?.z ?? 0]}
           visible={!!selectedAssetId}
-          confidence={selectedAsset.overallEvidenceConfidence}
+          confidence={String(selectedAsset.overallEvidenceConfidence || "low")}
         />
       )}
 

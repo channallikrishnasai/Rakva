@@ -1,9 +1,10 @@
 "use client";
 
-import type { DisasterAsset, SimulationEvent } from "@/lib/types/command-center";
+import type { Asset } from "@/core/contracts";
+import type { SimulationEvent } from "@/lib/types/command-center";
 
 interface DynamicReassessmentProps {
-  asset: DisasterAsset;
+  asset: Asset;
   simulationEvent: SimulationEvent | null;
   onSimulate: () => void;
   simulated: boolean;
@@ -31,7 +32,7 @@ export function DynamicReassessment({ asset, simulationEvent, onSimulate, simula
             </div>
             <div className="flex items-baseline gap-2 mt-1">
               <span className="text-[10px] text-slate-500">Priority:</span>
-              <span className="text-lg font-bold text-cyan-400">{asset.basePriority}</span>
+              <span className="text-lg font-bold text-cyan-400">{asset.priorityMetrics?.basePriority}</span>
             </div>
           </div>
           <button

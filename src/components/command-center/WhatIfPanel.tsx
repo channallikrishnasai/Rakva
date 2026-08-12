@@ -1,9 +1,9 @@
 "use client";
 
-import type { DisasterAsset } from "@/lib/types/command-center";
+import type { Asset } from "@/core/contracts";
 
 interface WhatIfPanelProps {
-  asset: DisasterAsset;
+  asset: Asset;
   isActive: boolean;
   onToggle: () => void;
 }

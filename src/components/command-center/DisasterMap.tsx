@@ -1,10 +1,10 @@
 "use client";
 
-import type { DisasterAsset } from "@/lib/types/command-center";
+import type { Asset } from "@/core/contracts";
 
 interface DisasterMapProps {
-  assets: DisasterAsset[];
-  selectedAssetId: string;
+  assets: Asset[];
+  selectedAssetId: string | null;
   onSelectAsset: (id: string) => void;
 }
 
@@ -132,9 +132,12 @@ export function DisasterMap({ assets, selectedAssetId, onSelectAsset }: Disaster
         {/* Asset markers */}
         {assets.map((asset) => {
           const isSelected = asset.id === selectedAssetId;
-          const color = priorityColors[asset.priorityLabel];
+          const priorityLabel = asset.priorityMetrics?.priorityLabel || "low";
+          const color = priorityColors[priorityLabel];
           const r = isSelected ? 2.8 : 2;
           const pulseR = isSelected ? 4.5 : 0;
+          const mx = asset.visualization?.mapPosition?.x || 0;
+          const my = asset.visualization?.mapPosition?.y || 0;
 
           return (
             <g
@@ -148,8 +151,8 @@ export function DisasterMap({ assets, selectedAssetId, onSelectAsset }: Disaster
               {isSelected && (
                 <>
                   <circle
-                    cx={asset.mapPosition.x}
-                    cy={asset.mapPosition.y}
+                    cx={mx}
+                    cy={my}
                     r={pulseR}
                     fill="none"
                     stroke={color}
@@ -174,9 +177,9 @@ export function DisasterMap({ assets, selectedAssetId, onSelectAsset }: Disaster
 
               {/* Affected radius */}
               <circle
-                cx={asset.mapPosition.x}
-                cy={asset.mapPosition.y}
-                r={asset.affectedRadius / 10}
+                cx={mx}
+                cy={my}
+                r={(asset.visualization?.affectedRadius || 10) / 10}
                 fill={`${color}10`}
                 stroke={`${color}30`}
                 strokeWidth="0.15"
@@ -185,8 +188,8 @@ export function DisasterMap({ assets, selectedAssetId, onSelectAsset }: Disaster
 
               {/* Marker background */}
               <circle
-                cx={asset.mapPosition.x}
-                cy={asset.mapPosition.y}
+                cx={mx}
+                cy={my}
                 r={r}
                 fill={isSelected ? color : `${color}cc`}
                 stroke={isSelected ? "#fff" : color}
@@ -196,8 +199,8 @@ export function DisasterMap({ assets, selectedAssetId, onSelectAsset }: Disaster
 
               {/* Asset icon (simplified) */}
               <text
-                x={asset.mapPosition.x}
-                y={asset.mapPosition.y + 0.1}
+                x={mx}
+                y={my + 0.1}
                 textAnchor="middle"
                 dominantBaseline="middle"
                 fill="white"
@@ -205,16 +208,16 @@ export function DisasterMap({ assets, selectedAssetId, onSelectAsset }: Disaster
                 fontWeight="bold"
                 fontFamily="sans-serif"
               >
-                {asset.assetType === "bridge" ? "B" :
-                 asset.assetType === "road" ? "R" :
-                 asset.assetType === "building" ? "H" :
-                 asset.assetType === "hospital" ? "+" : "U"}
+                {asset.type === "bridge" ? "B" :
+                 asset.type === "road" ? "R" :
+                 asset.type === "building" ? "H" :
+                 asset.type === "hospital" ? "+" : "U"}
               </text>
 
               {/* Asset label */}
               <text
-                x={asset.mapPosition.x}
-                y={asset.mapPosition.y + r + 1.5}
+                x={mx}
+                y={my + r + 1.5}
                 textAnchor="middle"
                 fill={isSelected ? "#e2e8f0" : "rgba(148,163,184,0.7)"}
                 fontSize="0.9"
@@ -227,15 +230,15 @@ export function DisasterMap({ assets, selectedAssetId, onSelectAsset }: Disaster
               {/* Priority label for selected */}
               {isSelected && (
                 <text
-                  x={asset.mapPosition.x}
-                  y={asset.mapPosition.y + r + 2.8}
+                  x={mx}
+                  y={my + r + 2.8}
                   textAnchor="middle"
                   fill={color}
                   fontSize="0.8"
                   fontFamily="monospace"
                   fontWeight="bold"
                 >
-                  P:{asset.recoveryPriority}
+                  P:{asset.priorityMetrics?.recoveryPriority}
                 </text>
               )}
             </g>

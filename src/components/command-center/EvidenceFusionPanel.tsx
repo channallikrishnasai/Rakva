@@ -1,9 +1,9 @@
 "use client";
 
-import type { DisasterAsset } from "@/lib/types/command-center";
+import type { Asset } from "@/core/contracts";
 
 interface EvidenceFusionPanelProps {
-  asset: DisasterAsset;
+  asset: Asset;
 }
 
 const sourceIcons: Record<string, string> = {
@@ -23,6 +23,8 @@ const statusConfig: Record<string, { label: string; color: string; bg: string }>
 };
 
 export function EvidenceFusionPanel({ asset }: EvidenceFusionPanelProps) {
+  const evidence = asset.evidence || [];
+  
   return (
     <div className="rounded-lg border border-slate-700/30 bg-slate-800/30 p-4">
       <div className="flex items-center justify-between mb-3">
@@ -32,7 +34,7 @@ export function EvidenceFusionPanel({ asset }: EvidenceFusionPanelProps) {
 
       {/* Source cards */}
       <div className="grid grid-cols-2 gap-2 mb-4">
-        {asset.evidenceSources.map((ev) => {
+        {evidence.map((ev) => {
           const config = statusConfig[ev.status] || statusConfig.received;
           return (
             <div
@@ -41,7 +43,7 @@ export function EvidenceFusionPanel({ asset }: EvidenceFusionPanelProps) {
             >
               <div className="flex items-center gap-2">
                 <div className={`flex h-5 w-5 items-center justify-center rounded text-[10px] font-bold ${config.color}`}>
-                  {sourceIcons[ev.source]}
+                  {sourceIcons[ev.source] || ev.source[0].toUpperCase()}
                 </div>
                 <span className="text-[10px] font-medium text-slate-300">{ev.label}</span>
                 <span className={`ml-auto text-[10px] font-medium ${config.color}`}>
@@ -58,14 +60,14 @@ export function EvidenceFusionPanel({ asset }: EvidenceFusionPanelProps) {
 
       {/* Fusion flow */}
       <div className="flex items-center justify-center gap-1 mb-3">
-        {asset.evidenceSources.map((ev, i) => (
+        {evidence.map((ev, i) => (
           <span key={ev.source} className="flex items-center gap-1">
             <span className={`inline-flex h-5 items-center rounded bg-slate-700/50 px-1.5 text-[9px] font-mono ${
               ev.status === "verified" || ev.status === "matched" ? "text-emerald-400" : ev.status === "conflict" ? "text-red-400" : "text-slate-400"
             }`}>
-              {sourceIcons[ev.source]}
+              {sourceIcons[ev.source] || ev.source[0].toUpperCase()}
             </span>
-            {i < asset.evidenceSources.length - 1 && (
+            {i < evidence.length - 1 && (
               <span className="text-[10px] text-slate-600">+</span>
             )}
           </span>
@@ -85,7 +87,7 @@ export function EvidenceFusionPanel({ asset }: EvidenceFusionPanelProps) {
             asset.overallEvidenceConfidence === "high" ? "text-emerald-400" :
             asset.overallEvidenceConfidence === "moderate" ? "text-yellow-400" : "text-slate-400"
           }`}>
-            {asset.overallEvidenceConfidence.toUpperCase()}
+            {(asset.overallEvidenceConfidence || "UNKNOWN").toUpperCase()}
           </span>
         </div>
       </div>

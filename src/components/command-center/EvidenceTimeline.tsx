@@ -1,9 +1,9 @@
 "use client";
 
-import type { DisasterAsset } from "@/lib/types/command-center";
+import type { Asset } from "@/core/contracts";
 
 interface EvidenceTimelineProps {
-  asset: DisasterAsset;
+  asset: Asset;
 }
 
 const timelineData: Record<string, { time: string; source: string; event: string; isPriorityUpdate?: boolean }[]> = {

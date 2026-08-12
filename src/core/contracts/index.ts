@@ -60,6 +60,49 @@ export interface Asset {
   criticality: number; // 1-100
   capacity?: number;
   status: 'operational' | 'degraded' | 'failed' | 'unknown';
+  visualization?: {
+    mapPosition?: { x: number; y: number };
+    scenePosition?: { x: number; z: number };
+    affectedRadius?: number;
+  };
+  damageSeverity?: SeverityLevel;
+  damageDescription?: string;
+  impactDescription?: string;
+  priorityMetrics?: {
+    basePriority: number;
+    recoveryPriority: number;
+    priorityLabel: 'critical' | 'high' | 'medium' | 'low';
+    factors: {
+      damage: number;
+      people: number;
+      vulnerability: number;
+      criticality: number;
+      accessibility: number;
+      urgency: number;
+    };
+    whyFirst?: Array<{
+      order: number;
+      title: string;
+      description: string;
+    }>;
+  };
+  evidence?: Array<{
+    source: string;
+    status: string;
+    label: string;
+    detail?: string;
+  }>;
+  overallEvidenceConfidence?: ConfidenceLevel | string;
+  consequenceLevel?: 'low' | 'moderate' | 'high' | 'critical';
+  consequenceDescription?: string;
+  accessibility?: 'accessible' | 'restricted' | 'critical_route' | 'blocked';
+  accessibilityDescription?: string;
+  urgency?: 'low' | 'moderate' | 'high';
+  urgencyDescription?: string;
+  dependencies?: Array<{
+    targetId: string;
+    label: string;
+  }>;
 }
 
 export interface Dependency {

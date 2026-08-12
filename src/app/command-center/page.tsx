@@ -1,9 +1,8 @@
 "use client";
 
-import { useState, useMemo, useCallback } from "react";
-import { commandCenterData, heroAssetId, simulationEvents } from "@/data/mock";
-import type { DisasterType, AssetType, FilterPriority } from "@/lib/types/command-center";
-import type { SceneLayer } from "@/components/command-center";
+import { useState, useCallback } from "react";
+import { commandCenterData, simulationEvents } from "@/data/mock";
+import { CommandCenterProvider, useCommandCenter } from "@/hooks/CommandCenterContext";
 import {
   DisasterMap,
   DisasterScene3D,
@@ -26,41 +25,40 @@ function checkWebGLSupport(): boolean {
   }
 }
 
-const sceneLayers: { value: SceneLayer; label: string }[] = [
+const sceneLayers: { value: "situation" | "damage" | "dependencies" | "recovery"; label: string }[] = [
   { value: "situation", label: "Situation" },
   { value: "damage", label: "Damage" },
   { value: "dependencies", label: "Dependencies" },
   { value: "recovery", label: "Recovery" },
 ];
 
-export default function CommandCenterPage() {
-  const data = commandCenterData;
+function CommandCenterContent() {
+  const {
+    assets,
+    isLoading,
+    selectedAssetId,
+    setSelectedAssetId,
+    selectedAsset,
+    filterAsset,
+    setFilterAsset,
+    filterPriority,
+    setFilterPriority,
+    filterEvidence,
+    setFilterEvidence,
+    filteredAssets,
+    viewMode,
+    setViewMode,
+    sceneLayer,
+    setSceneLayer,
+    whatIfActive,
+    setWhatIfActive,
+    simulationEvent,
+  } = useCommandCenter();
 
-  const [selectedAssetId, setSelectedAssetId] = useState(heroAssetId);
-  const [filterDisaster, setFilterDisaster] = useState<DisasterType | "all">("all");
-  const [filterAsset, setFilterAsset] = useState<AssetType | "all">("all");
-  const [filterPriority, setFilterPriority] = useState<FilterPriority | "all">("all");
-  const [filterEvidence, setFilterEvidence] = useState("all");
   const [simulated, setSimulated] = useState(false);
-  const [viewMode, setViewMode] = useState<"3d" | "2d">("3d");
   const [webglSupported] = useState(checkWebGLSupport);
-  const [whatIfActive, setWhatIfActive] = useState(false);
-  const [sceneLayer, setSceneLayer] = useState<SceneLayer>("situation");
-
-  const filteredAssets = useMemo(() => {
-    return data.assets.filter((a: any) => {
-      if (filterAsset !== "all" && a.assetType !== filterAsset) return false;
-      if (filterPriority !== "all" && a.priorityLabel !== filterPriority) return false;
-      if (filterEvidence !== "all" && !a.evidenceSources.some((e: any) => e.source === filterEvidence)) return false;
-      return true;
-    });
-  }, [data.assets, filterAsset, filterPriority, filterEvidence]);
-
-  const selectedAsset = filteredAssets.find((a: any) => a.id === selectedAssetId) || filteredAssets[0];
-
-  const simulationEvent = selectedAsset
-    ? simulationEvents.find((e) => e.assetId === selectedAsset.id) || null
-    : null;
+  // Using dummy disaster type and region data for now to preserve UI structure
+  const data = commandCenterData;
 
   const handleSimulate = useCallback(() => {
     setSimulated((prev) => !prev);
@@ -70,11 +68,21 @@ export default function CommandCenterPage() {
     setSelectedAssetId(id);
     setSimulated(false);
     setWhatIfActive(false);
-  }, []);
+  }, [setSelectedAssetId, setWhatIfActive]);
 
   const handleWhatIfToggle = useCallback(() => {
-    setWhatIfActive((prev) => !prev);
-  }, []);
+    setWhatIfActive(!whatIfActive);
+  }, [whatIfActive, setWhatIfActive]);
+
+  if (isLoading) {
+    return (
+      <div className="flex h-screen items-center justify-center bg-[#0c1222]">
+        <div className="text-cyan-400 font-mono tracking-wider animate-pulse">
+          INITIALIZING COMMAND CENTER...
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="mx-auto max-w-[1600px] px-4 py-6 lg:px-6">
@@ -128,15 +136,15 @@ export default function CommandCenterPage() {
       <div className="mb-4 grid grid-cols-2 gap-2 sm:grid-cols-4">
         <div className="rounded-lg border border-slate-700/30 bg-slate-800/40 p-3 text-center">
           <p className="text-[10px] text-slate-500 mb-1">AFFECTED ASSETS</p>
-          <p className="text-2xl font-bold text-white">{data.totalAssets}</p>
+          <p className="text-2xl font-bold text-white">{filteredAssets.length}</p>
         </div>
         <div className="rounded-lg border border-orange-500/20 bg-orange-500/5 p-3 text-center">
           <p className="text-[10px] text-slate-500 mb-1">HIGH PRIORITY</p>
-          <p className="text-2xl font-bold text-orange-400">{data.highPriorityCount}</p>
+          <p className="text-2xl font-bold text-orange-400">{filteredAssets.filter(a => a.priorityMetrics?.priorityLabel === 'high').length}</p>
         </div>
         <div className="rounded-lg border border-red-500/20 bg-red-500/5 p-3 text-center">
           <p className="text-[10px] text-slate-500 mb-1">CRITICAL</p>
-          <p className="text-2xl font-bold text-red-400">{data.criticalCount}</p>
+          <p className="text-2xl font-bold text-red-400">{filteredAssets.filter(a => a.priorityMetrics?.priorityLabel === 'critical').length}</p>
         </div>
         <div className="rounded-lg border border-cyan-500/20 bg-cyan-500/5 p-3 text-center">
           <p className="text-[10px] text-slate-500 mb-1">EVIDENCE CONFIDENCE</p>
@@ -147,13 +155,13 @@ export default function CommandCenterPage() {
       {/* Filter Controls + View/Layer Controls */}
       <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between rounded-lg border border-slate-700/30 bg-slate-800/30 px-4 py-2.5">
         <FilterControls
-          disasterType={filterDisaster}
-          assetType={filterAsset}
-          priority={filterPriority}
+          disasterType={"all"} // Placeholder
+          assetType={filterAsset as any}
+          priority={filterPriority as any}
           evidence={filterEvidence}
-          onDisasterTypeChange={setFilterDisaster}
-          onAssetTypeChange={setFilterAsset}
-          onPriorityChange={setFilterPriority}
+          onDisasterTypeChange={() => {}} // Placeholder
+          onAssetTypeChange={setFilterAsset as any}
+          onPriorityChange={setFilterPriority as any}
           onEvidenceChange={setFilterEvidence}
         />
 
@@ -213,7 +221,7 @@ export default function CommandCenterPage() {
             <div className="h-[450px] lg:h-[520px]">
               <DisasterScene3D
                 assets={filteredAssets}
-                selectedAssetId={selectedAsset?.id || ""}
+                selectedAssetId={selectedAssetId}
                 onSelectAsset={handleSelectAsset}
                 whatIfActive={whatIfActive}
                 sceneLayer={sceneLayer}
@@ -222,7 +230,7 @@ export default function CommandCenterPage() {
           ) : (
             <DisasterMap
               assets={filteredAssets}
-              selectedAssetId={selectedAsset?.id || ""}
+              selectedAssetId={selectedAssetId}
               onSelectAsset={handleSelectAsset}
             />
           )}
@@ -295,5 +303,13 @@ export default function CommandCenterPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function CommandCenterPage() {
+  return (
+    <CommandCenterProvider>
+      <CommandCenterContent />
+    </CommandCenterProvider>
   );
 }
