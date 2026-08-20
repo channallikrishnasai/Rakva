@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import { commandCenterData, simulationEvents } from "@/data/mock";
+import { commandCenterData } from "@/data/mock";
 import { CommandCenterProvider, useCommandCenter } from "@/hooks/CommandCenterContext";
 import {
   DisasterMap,
@@ -158,12 +158,12 @@ function CommandCenterContent() {
       <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between rounded-lg border border-slate-700/30 bg-slate-800/30 px-4 py-2.5">
         <FilterControls
           disasterType={"all"} // Placeholder
-          assetType={filterAsset as any}
-          priority={filterPriority as any}
+          assetType={filterAsset}
+          priority={filterPriority}
           evidence={filterEvidence}
           onDisasterTypeChange={() => {}} // Placeholder
-          onAssetTypeChange={setFilterAsset as any}
-          onPriorityChange={setFilterPriority as any}
+          onAssetTypeChange={setFilterAsset}
+          onPriorityChange={setFilterPriority}
           onEvidenceChange={setFilterEvidence}
         />
 

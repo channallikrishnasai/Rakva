@@ -5,6 +5,7 @@ import { SceneLayer } from '@/components/command-center/DisasterScene3D';
 import { commandCenterData, simulationEvents } from '@/data/mock/command-center';
 import { priorityEngine } from '@/core/priority/PriorityEngine';
 import { mockPriorityInputs } from '@/data/mock/MockPriorityProvider';
+import type { AssetType, FilterPriority } from '@/lib/types/command-center';
 
 export interface CommandCenterState {
   // Data
@@ -17,10 +18,10 @@ export interface CommandCenterState {
   selectedAsset: Asset | null;
   
   // Filters
-  filterAsset: string;
-  setFilterAsset: (filter: string) => void;
-  filterPriority: string;
-  setFilterPriority: (filter: string) => void;
+  filterAsset: AssetType | "all";
+  setFilterAsset: (filter: AssetType | "all") => void;
+  filterPriority: FilterPriority | "all";
+  setFilterPriority: (filter: FilterPriority | "all") => void;
   filterEvidence: string;
   setFilterEvidence: (filter: string) => void;
   
@@ -46,8 +47,8 @@ export function useCommandCenterState(): CommandCenterState {
   
   const [selectedAssetId, setSelectedAssetId] = useState<string | null>(null);
   
-  const [filterAsset, setFilterAsset] = useState<string>("all");
-  const [filterPriority, setFilterPriority] = useState<string>("all");
+  const [filterAsset, setFilterAsset] = useState<AssetType | "all">("all");
+  const [filterPriority, setFilterPriority] = useState<FilterPriority | "all">("all");
   const [filterEvidence, setFilterEvidence] = useState<string>("all");
   
   const [viewMode, setViewMode] = useState<'3d' | '2d'>('3d');

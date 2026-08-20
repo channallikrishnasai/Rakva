@@ -64,7 +64,10 @@ export function IntelligenceMap({
       const supported = def.supportedGeographicLevels;
       const currentIndex = supported.indexOf(geographicLevel);
       if (currentIndex === -1) {
-        setGeographicLevel(supported[0] || 'district');
+        // Use a timeout to avoid synchronous setState in effect
+        setTimeout(() => {
+          setGeographicLevel(supported[0] || 'district');
+        }, 0);
       }
     }
   }, [selectedLayer, geographicLevel]);
@@ -128,7 +131,9 @@ export function IntelligenceMap({
 
   // Reset clicked state when layer changes
   useEffect(() => {
-    setClickedRegion(null);
+    setTimeout(() => {
+      setClickedRegion(null);
+    }, 0);
   }, [selectedLayer]);
 
   return (
